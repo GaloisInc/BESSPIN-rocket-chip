@@ -82,3 +82,12 @@ class BaseFPGAConfig extends Config(new BaseConfig)
 
 class DefaultFPGAConfig extends Config(new WithNSmallCores(1) ++ new BaseFPGAConfig)
 class DefaultFPGASmallConfig extends Config(new DefaultFPGAConfig)
+
+class GaloisP1Config extends Config(
+  new WithRV32 ++ 
+  new WithNoSlavePort ++
+  new WithoutFPU ++
+  new WithNExtTopInterrupts(16) ++
+  new WithL1ICacheSets(16) ++
+  new WithL1DCacheSets(16) ++
+  new DefaultConfig)
