@@ -9,14 +9,17 @@ import freechips.rocketchip.subsystem._
 import freechips.rocketchip.diplomacy._
 
 
-// class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
+class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
 
 class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
+//  new WithJtagDTMSystem ++
   new WithNExtTopInterrupts(16) ++
-  new WithL1ICacheSets(16) ++
-  new WithL1DCacheSets(16) ++
+  new WithL1ICacheSets(64) ++
+  new WithL1DCacheSets(64) ++
+  new WithNSmallCores(1) ++
+  new WithDTS("galois,rocketchip-p1", Nil) ++
   new BaseConfig
 )
 
@@ -25,8 +28,6 @@ class BaseConfig extends Config(
   new WithDefaultMMIOPort() ++
   new WithNoSlavePort ++
   new WithTimebase(BigInt(1000000)) ++ // 1 MHz
-  new WithDTS("galois,rocketchip-p1", Nil) ++
-//  new WithJtagDTMSystem ++
   new BaseSubsystemConfig()
 )
 

@@ -7,6 +7,7 @@ import freechips.rocketchip.tile.XLen
 import freechips.rocketchip.util.GeneratorApp
 
 import scala.collection.mutable.LinkedHashSet
+import freechips.rocketchip.system.{DefaultTestSuites, TestGeneration, RegressionTestSuite}
 
 /** A Generator for platforms containing Rocket Subsystemes */
 object Generator extends GeneratorApp {

@@ -11,12 +11,13 @@ import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
-class GaloisP1System(implicit p: Parameters) extends RocketSubsystem
+class P1System(implicit p: Parameters) extends RocketSubsystem
     with HasAsyncExtInterrupts
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
-    with HasPeripheryBootROM {
-  override lazy val module = new GaloisP1SystemModuleImp(this)
+//    with HasPeripheryBootROM 
+{
+  override lazy val module = new P1SystemModuleImp(this)
 
   // The sbus masters the cbus; here we convert TL-UH -> TL-UL
   sbus.crossToBus(cbus, NoCrossing)
@@ -38,10 +39,10 @@ class GaloisP1System(implicit p: Parameters) extends RocketSubsystem
   }
 }
 
-class GaloisP1SystemModuleImp[+L <: GaloisP1System](_outer: L) extends RocketSubsystemModuleImp(_outer)
+class P1SystemModuleImp[+L <: P1System](_outer: L) extends RocketSubsystemModuleImp(_outer)
     with HasRTCModuleImp
     with HasExtInterruptsModuleImp
     with CanHaveMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
-    with HasPeripheryBootROMModuleImp
+//    with HasPeripheryBootROMModuleImp
     with DontTouch
