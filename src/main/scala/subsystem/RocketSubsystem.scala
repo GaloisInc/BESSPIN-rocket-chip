@@ -9,7 +9,6 @@ import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.devices.debug.{HasPeripheryDebug, HasPeripheryDebugModuleImp}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tile._
-import galois.devices._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.interrupts._
 import freechips.rocketchip.util._
