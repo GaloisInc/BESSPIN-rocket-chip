@@ -6,12 +6,12 @@ import Chisel._
 import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
-import freechips.rocketchip.subsystem._
+import galois.subsystem._
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
-class P1System(implicit p: Parameters) extends RocketSubsystem
+class P1System(implicit p: Parameters) extends GaloisSubsystem
     with HasAsyncExtInterrupts
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
@@ -39,7 +39,7 @@ class P1System(implicit p: Parameters) extends RocketSubsystem
   }
 }
 
-class P1SystemModuleImp[+L <: P1System](_outer: L) extends RocketSubsystemModuleImp(_outer)
+class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
     with HasRTCModuleImp
     with HasExtInterruptsModuleImp
     with CanHaveMasterAXI4MemPortModuleImp
