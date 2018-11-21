@@ -31,7 +31,8 @@ case object RocketTilesKey extends Field[Seq[RocketTileParams]](Nil)
 case object RocketCrossingKey extends Field[Seq[RocketCrossingParams]](List(RocketCrossingParams()))
 
 trait HasRocketTiles extends HasTiles
-    with CanHavePeripheryPLIC
+    with CanHaveExtCLINT
+//    with CanHavePeripheryPLIC
     with CanHavePeripheryCLINT
     with HasPeripheryDebug { this: BaseSubsystem =>
   val module: HasRocketTilesModuleImp
@@ -49,7 +50,7 @@ trait HasRocketTiles extends HasTiles
 
     connectMasterPortsToSBus(rocket, crossing)
     connectSlavePortsToCBus(rocket, crossing)
-    connectInterrupts(rocket, Some(debug), clintOpt, plicOpt)
+    connectInterruptsModified(rocket, Some(debug), extClintOpt)
 
     rocket
   }

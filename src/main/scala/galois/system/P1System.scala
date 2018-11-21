@@ -6,16 +6,15 @@ import Chisel._
 import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
-import galois.subsystem._
+import freechips.rocketchip.subsystem._
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
-class P1System(implicit p: Parameters) extends GaloisSubsystem
-    with HasAsyncExtInterrupts
+class P1System(implicit p: Parameters) extends RocketSubsystem
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
-//    with HasPeripheryBootROM 
+    with HasExtPLIC
 {
   override lazy val module = new P1SystemModuleImp(this)
 
@@ -39,10 +38,9 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
   }
 }
 
-class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
-    with HasRTCModuleImp
-    with HasExtInterruptsModuleImp
+class P1SystemModuleImp[+L <: P1System](_outer: L) extends RocketSubsystemModuleImp(_outer)
+    with HasExtCLINTModuleImp
     with CanHaveMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
-//    with HasPeripheryBootROMModuleImp
+    with HasExtPLICModuleImp
     with DontTouch
