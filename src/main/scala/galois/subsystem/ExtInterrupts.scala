@@ -1,12 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package galois.subsystem
 
 import Chisel._
 import freechips.rocketchip.diplomacy._
+import freechips.rocketchip.subsystem.BaseSubsystem
 import galois.devices._
 
-/** This trait adds externally driven interrupts to the system. 
+/** This trait adds externally driven interrupts to the system.
   * However, it should not be used directly; instead one of the below
   * synchronization wiring child traits should be used.
   */
@@ -24,13 +25,13 @@ trait HasExtPLICBundle {
 }
 
 /** This trait performs the translation from a UInt IO into Diplomatic Interrupts.
-  * The wiring must be done in the concrete LazyModuleImp. 
+  * The wiring must be done in the concrete LazyModuleImp.
   */
 trait HasExtPLICModuleImp extends LazyModuleImp with HasExtPLICBundle {
   val outer: HasExtPLIC
   val interrupts = IO(UInt(INPUT, width = 3))
 
-//  outer.extInterrupts.out.map(_._1).flatten.zipWithIndex.foreach { case(o, i) => o := interrupts(i) }
+  //  outer.extInterrupts.out.map(_._1).flatten.zipWithIndex.foreach { case(o, i) => o := interrupts(i) }
 }
 
 trait HasExtCLINTBundle {

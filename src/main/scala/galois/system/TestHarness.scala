@@ -17,6 +17,7 @@ class TestHarness()(implicit p: Parameters) extends Module {
 
   dut.dontTouchPorts()
 //  dut.tieOffInterrupts()
+  dut.tieOffClintInterrupts()
   dut.connectSimAXIMem()
   dut.connectSimAXIMMIO()
   Debug.connectDebug(dut.debug, clock, reset, io.success)

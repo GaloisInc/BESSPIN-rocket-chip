@@ -17,8 +17,9 @@ import freechips.rocketchip.util._
 
 trait HasGaloisTiles extends HasTiles
     with CanHaveExtCLINT
-//    with CanHavePeripheryPLIC
+    with CanHavePeripheryPLIC
     with CanHavePeripheryCLINT
+    with CanHaveExtPLIC
     with HasPeripheryDebug { this: BaseSubsystem =>
   val module: HasGaloisTilesModuleImp
 
@@ -35,7 +36,7 @@ trait HasGaloisTiles extends HasTiles
 
     connectMasterPortsToSBus(rocket, crossing)
     connectSlavePortsToCBus(rocket, crossing)
-    connectInterruptsModified(rocket, Some(debug), extClintOpt)
+    connectInterrupts(rocket, Some(debug), clintOpt, plicOpt, extClintOpt, extPlicOpt)
 
     rocket
   }

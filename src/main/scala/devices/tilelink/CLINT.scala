@@ -32,11 +32,7 @@ case class CLINTParams(baseAddress: BigInt = 0x02000000, intStages: Int = 0)
 
 case object CLINTKey extends Field[Option[CLINTParams]](None)
 
-abstract class CLINTBase(implicit p: Parameters) extends LazyModule {
-  val intnode: IntNexusNode
-}
-
-class CLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends CLINTBase
+class CLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends LazyModule
 {
   import CLINTConsts._
 

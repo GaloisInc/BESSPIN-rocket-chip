@@ -7,7 +7,8 @@ import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
 import galois.subsystem._
-import freechips.rocketchip.subsystem.{HasExtCLINTModuleImp, HasExtPLIC, HasExtPLICModuleImp, CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params, BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp}
+import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params,
+  BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp}
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 

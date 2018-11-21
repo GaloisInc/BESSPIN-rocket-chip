@@ -10,7 +10,7 @@ import freechips.rocketchip.util.Annotated
 
 case object ExtCLINTKey extends Field[Option[CLINTParams]](None)
 
-class ExtCLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends CLINTBase
+class ExtCLINT(params: CLINTParams)(implicit p: Parameters) extends LazyModule
 {
   import CLINTConsts._
   //  override val node = 0.U
@@ -43,7 +43,7 @@ class ExtCLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) exte
 /** Trait that will connect a CLINT to a subsystem */
 trait CanHaveExtCLINT { this: BaseSubsystem =>
   val extClintOpt = p(ExtCLINTKey).map { params =>
-    val clint = LazyModule(new ExtCLINT(params, cbus.beatBytes))
+    val clint = LazyModule(new ExtCLINT(params))
     clint
   }
 }
