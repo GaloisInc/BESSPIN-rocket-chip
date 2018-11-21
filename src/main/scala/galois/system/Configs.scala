@@ -5,8 +5,9 @@ package galois.system
 
 import Chisel._
 import freechips.rocketchip.config.Config
-import freechips.rocketchip.devices.tilelink.{CLINTKey, ExtCLINTKey, CLINTParams}
-import freechips.rocketchip.subsystem._
+import freechips.rocketchip.devices.tilelink.{CLINTKey, CLINTParams}
+import galois.devices._
+import galois.subsystem._
 import freechips.rocketchip.diplomacy._
 
 

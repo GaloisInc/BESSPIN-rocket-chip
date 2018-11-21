@@ -4,7 +4,7 @@ package freechips.rocketchip.subsystem
 
 import Chisel._
 import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.devices.tilelink.{CanHaveExtCLINT}
+import galois.devices._
 
 /** This trait adds externally driven interrupts to the system. 
   * However, it should not be used directly; instead one of the below

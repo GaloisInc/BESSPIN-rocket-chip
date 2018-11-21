@@ -9,30 +9,18 @@ import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.devices.debug.{HasPeripheryDebug, HasPeripheryDebugModuleImp}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tile._
+import freechips.rocketchip.subsystem.{BaseSubsystem, BaseSubsystemModuleImp, HasTilesModuleImp, RocketCrossingParams, RocketTilesKey, RocketCrossingKey}
+import galois.devices._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.interrupts._
 import freechips.rocketchip.util._
 
-// TODO: how specific are these to RocketTiles?
-case class TileMasterPortParams(buffers: Int = 0, cork: Option[Boolean] = None)
-case class TileSlavePortParams(buffers: Int = 0, blockerCtrlAddr: Option[BigInt] = None)
-
-case class RocketCrossingParams(
-    crossingType: ClockCrossingType = SynchronousCrossing(),
-    master: TileMasterPortParams = TileMasterPortParams(),
-    slave: TileSlavePortParams = TileSlavePortParams()) {
-  def knownRatio: Option[Int] = crossingType match {
-    case RationalCrossing(_) => Some(2)
-    case _ => None
-  }
-}
-
-case object RocketTilesKey extends Field[Seq[RocketTileParams]](Nil)
-case object RocketCrossingKey extends Field[Seq[RocketCrossingParams]](List(RocketCrossingParams()))
-
-trait HasRocketTiles extends HasTiles
+trait HasGaloisTiles extends HasTiles
+    with CanHaveExtCLINT
+//    with CanHavePeripheryPLIC
+    with CanHavePeripheryCLINT
     with HasPeripheryDebug { this: BaseSubsystem =>
-  val module: HasRocketTilesModuleImp
+  val module: HasGaloisTilesModuleImp
 
   protected val rocketTileParams = p(RocketTilesKey)
   private val crossings = perTileOrGlobalSetting(p(RocketCrossingKey), rocketTileParams.size)
@@ -47,26 +35,25 @@ trait HasRocketTiles extends HasTiles
 
     connectMasterPortsToSBus(rocket, crossing)
     connectSlavePortsToCBus(rocket, crossing)
-    //connectInterrupts(rocket, Some(debug), clintOpt, plicOpt)
-    connectInterrupts(rocket, Some(debug), Some(clintOpt), Some(plicOpt))
+    connectInterruptsModified(rocket, Some(debug), extClintOpt)
 
     rocket
   }
 }
 
-trait HasRocketTilesModuleImp extends HasTilesModuleImp
+trait HasGaloisTilesModuleImp extends HasTilesModuleImp
     with HasPeripheryDebugModuleImp {
-  val outer: HasRocketTiles
+  val outer: HasGaloisTiles
 }
 
-class GalosiSubsystem(implicit p: Parameters) extends BaseSubsystem
-    with HasRocketTiles {
+class GaloisSubsystem(implicit p: Parameters) extends BaseSubsystem
+    with HasGaloisTiles {
   val tiles = rocketTiles
   override lazy val module = new GaloisSubsystemModuleImp(this)
 }
 
 class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSubsystemModuleImp(_outer)
-    with HasRocketTilesModuleImp {
+    with HasGaloisTilesModuleImp {
   tile_inputs.zip(outer.hartIdList).foreach { case(wire, i) =>
     wire.clock := clock
     wire.reset := reset

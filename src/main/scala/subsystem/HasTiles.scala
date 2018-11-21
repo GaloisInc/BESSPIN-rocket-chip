@@ -6,7 +6,7 @@ import Chisel._
 import chisel3.experimental.dontTouch
 import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.devices.debug.TLDebugModule
-import freechips.rocketchip.devices.tilelink.{BasicBusBlocker, BasicBusBlockerParams, CLINT, ExtCLINT, CLINTConsts, TLPLIC, PLICKey}
+import freechips.rocketchip.devices.tilelink.{BasicBusBlocker, BasicBusBlockerParams, CLINT, CLINTBase, CLINTConsts, TLPLIC, PLICKey}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.interrupts._
 import freechips.rocketchip.tile.{BaseTile, LookupByHartId, LookupByHartIdImpl, TileKey, TileParams, SharedMemoryTLEdge, HasExternallyDrivenTileConstants}
@@ -70,7 +70,7 @@ trait HasTiles { this: BaseSubsystem =>
       }
     }
   }
-  protected def connectInterruptsModified(tile: BaseTile, debugOpt: Option[TLDebugModule], clintOpt: Option[ExtCLINT]) {
+  protected def connectInterruptsModified(tile: BaseTile, debugOpt: Option[TLDebugModule], clintOpt: Option[CLINTBase]) {
     // Handle all the different types of interrupts crossing to or from the tile:
     // NOTE: The order of calls to := matters! They must match how interrupts
     //       are decoded from tile.intInwardNode inside the tile. For this reason,

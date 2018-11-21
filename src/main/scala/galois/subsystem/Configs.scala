@@ -7,6 +7,8 @@ import Chisel._
 import freechips.rocketchip.config._
 import freechips.rocketchip.devices.debug._
 import freechips.rocketchip.devices.tilelink._
+import freechips.rocketchip.subsystem.{ExtIn, NExtTopInterrupts, ExtMem, MemoryPortParams, ExtBus, SlavePortParams, MasterPortParams, SystemBusParams, PeripheryBusParams, FrontBusParams, SystemBusKey, ControlBusKey, PeripheryBusKey, MemoryBusKey, FrontBusKey, BankedL2Key,
+  CacheBlockBytes, MemoryBusParams, BroadcastKey, RocketTilesKey, RocketCrossingKey, RocketCrossingParams, TileMasterPortParams}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._

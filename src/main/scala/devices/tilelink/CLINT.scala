@@ -31,9 +31,12 @@ case class CLINTParams(baseAddress: BigInt = 0x02000000, intStages: Int = 0)
 }
 
 case object CLINTKey extends Field[Option[CLINTParams]](None)
-case object ExtCLINTKey extends Field[Option[CLINTParams]](None)
 
-class CLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends LazyModule
+abstract class CLINTBase(implicit p: Parameters) extends LazyModule {
+  val intnode: IntNexusNode
+}
+
+class CLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends CLINTBase
 {
   import CLINTConsts._
 
@@ -99,44 +102,6 @@ trait CanHavePeripheryCLINT { this: BaseSubsystem =>
   val clintOpt = p(CLINTKey).map { params =>
     val clint = LazyModule(new CLINT(params, cbus.beatBytes))
     clint.node := cbus.coupleTo("clint") { TLFragmenter(cbus) := _ }
-    clint
-  }
-}
-
-class ExtCLINT(params: CLINTParams, beatBytes: Int)(implicit p: Parameters) extends LazyModule
-{
-  import CLINTConsts._
-//  override val node = 0.U
-
-  val device = new SimpleDevice("clint", Seq("riscv,clint0")) {
-    override val alwaysExtended = true
-  }
-
-  val intnode = IntNexusNode(
-    sourceFn = { _ => IntSourcePortParameters(Seq(IntSourceParameters(ints, Seq(Resource(device, "int"))))) },
-    sinkFn   = { _ => IntSinkPortParameters(Seq(IntSinkParameters())) },
-    outputRequiresInput = false)
-
-  lazy val module = new LazyModuleImp(this) {
-    Annotated.params(this, params)
-    require (intnode.edges.in.size == 0, "CLINT only produces interrupts; it does not accept them")
-
-    val io = IO(new Bundle {
-      val clint_extint = UInt(INPUT, width = 2)
-    })
-
-    val (intnode_out, _) = intnode.out.unzip
-    intnode_out.zipWithIndex.foreach { case (int, i) =>
-      int(0) := io.clint_extint(0) // msip
-      int(1) := io.clint_extint(1) // mtip
-    }
-  }
-}
-
-/** Trait that will connect a CLINT to a subsystem */
-trait CanHaveExtCLINT { this: BaseSubsystem =>
-  val extClintOpt = p(ExtCLINTKey).map { params =>
-    val clint = LazyModule(new ExtCLINT(params, cbus.beatBytes))
     clint
   }
 }

@@ -16,7 +16,7 @@ class TestHarness()(implicit p: Parameters) extends Module {
   dut.reset := reset | dut.debug.ndreset
 
   dut.dontTouchPorts()
-  dut.tieOffInterrupts()
+//  dut.tieOffInterrupts()
   dut.connectSimAXIMem()
   dut.connectSimAXIMMIO()
   Debug.connectDebug(dut.debug, clock, reset, io.success)
