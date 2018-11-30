@@ -8,15 +8,15 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
 import galois.subsystem._
 import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params,
-  BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp}
+  BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
 class P1System(implicit p: Parameters) extends GaloisSubsystem
+  with HasAsyncExtInterrupts
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
-    with HasExtPLIC
 {
   override lazy val module = new P1SystemModuleImp(this)
 
@@ -41,8 +41,7 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
 }
 
 class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
-    with HasExtCLINTModuleImp
     with CanHaveMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
-    with HasExtPLICModuleImp
+    with HasExtInterruptsModuleImp
     with DontTouch

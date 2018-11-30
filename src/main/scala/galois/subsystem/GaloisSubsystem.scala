@@ -9,17 +9,17 @@ import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.devices.debug.{HasPeripheryDebug, HasPeripheryDebugModuleImp}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tile._
-import freechips.rocketchip.subsystem.{BaseSubsystem, BaseSubsystemModuleImp, HasTilesModuleImp, RocketCrossingParams, RocketTilesKey, RocketCrossingKey}
+import freechips.rocketchip.subsystem.{BaseSubsystem, BaseSubsystemModuleImp, RocketCrossingParams, RocketTilesKey, RocketCrossingKey}
 import galois.devices._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.interrupts._
 import freechips.rocketchip.util._
 
 trait HasGaloisTiles extends HasTiles
-    with CanHaveExtCLINT
+//    with CanHaveExtCLINT
     with CanHavePeripheryPLIC
     with CanHavePeripheryCLINT
-    with CanHaveExtPLIC
+//    with CanHaveExtPLIC
     with HasPeripheryDebug { this: BaseSubsystem =>
   val module: HasGaloisTilesModuleImp
 
@@ -36,7 +36,8 @@ trait HasGaloisTiles extends HasTiles
 
     connectMasterPortsToSBus(rocket, crossing)
     connectSlavePortsToCBus(rocket, crossing)
-    connectInterrupts(rocket, Some(debug), clintOpt, plicOpt, extClintOpt, extPlicOpt)
+//    connectInterrupts(rocket, Some(debug), clintOpt, plicOpt, extClintOpt, extPlicOpt)
+    connectInterrupts(rocket, Some(debug), clintOpt, plicOpt)
 
     rocket
   }
