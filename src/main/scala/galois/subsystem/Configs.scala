@@ -72,6 +72,7 @@ class WithNSmallCores(n: Int) extends Config((site, here, up) => {
     val small = RocketTileParams(
       core = RocketCoreParams(useVM = false, fpu = None),
       btb = None,
+      trace = true,
       dcache = Some(DCacheParams(
         rowBits = site(SystemBusKey).beatBits,
         nSets = 64,
