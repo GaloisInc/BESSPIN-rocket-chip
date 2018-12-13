@@ -17,7 +17,7 @@ class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
 class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
-  new WithJtagDTMSystem ++
+//  new WithJtagDTMSystem ++
   new WithoutTLMonitors ++
   // External Interrupts are handled by Bluespec's PLIC
   new WithExtCLINT ++
