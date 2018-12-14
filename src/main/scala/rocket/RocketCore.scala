@@ -858,6 +858,15 @@ class Rocket(implicit p: Parameters) extends CoreModule()(p)
          coreMonitorBundle.inst, coreMonitorBundle.inst)
   }
 
+    when (wb_ctrl.mem && (isAMO(wb_ctrl.mem_cmd)))
+    {
+      printf("RocketCore: Instruction is AMO! mem = 0x%x | type = 0x%x | cmd = 0x%x\n", wb_ctrl.mem, wb_ctrl.mem_type, wb_ctrl.mem_cmd)
+    }
+
+    when (wb_ctrl.mem && wb_ctrl.mem_cmd.isOneOf(M_XLR, M_XSC)) {
+      printf("RocketCore: Instruction is XLR or XSC! mem = 0x%x | type = 0x%x | cmd = 0x%x\n", wb_ctrl.mem, wb_ctrl.mem_type, wb_ctrl.mem_cmd)
+    }
+
   PlusArg.timeout(
     name = "max_core_cycles",
     docstring = "Kill the emulation after INT rdtime cycles. Off if 0."
