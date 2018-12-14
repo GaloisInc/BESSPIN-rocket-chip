@@ -94,6 +94,9 @@ class TraceConverter()(implicit p: Parameters) extends Module {
   val mem = Wire(Bool())
   val mem_cmd = Wire(Bits(width = 5))
   val isAMOInsn = mem && (isAMO(mem_cmd) || mem_cmd.isOneOf(M_XLR, M_XSC))
+  val branch = Wire(Bool())
+  val mem_npc = Wire(UInt(width = p(XLen)))
+  val npc = Reg(next = mem_npc)
   val isLoad = Reg(next = mem_reg_load)
   val isStore = Reg(next = mem_reg_store)
 
@@ -121,6 +124,17 @@ class TraceConverter()(implicit p: Parameters) extends Module {
     }
   }
 
+  def mkTrace_AMO(msg: TraceMessage, pc: UInt, isize: UInt, instruction: UInt, rd: UInt, rdvalue: UInt, data: UInt, eaddr: UInt) = {
+    msg.op := TraceOP.trace_amo
+    msg.pc := pc
+    msg.instr_size := TraceInstrSize.isize_32bit
+    msg.instr := instruction
+    msg.rd := rd
+    msg.word1 := rdvalue
+    msg.word2 := data
+    msg.word3 := eaddr
+  }
+
   def mkTrace_STORE(msg: TraceMessage, pc: UInt, isize: UInt, instruction: UInt, data: UInt, eaddr: UInt) = {
     msg.op := TraceOP.trace_store
     msg.pc := pc
@@ -128,6 +142,13 @@ class TraceConverter()(implicit p: Parameters) extends Module {
     msg.instr := instruction
     msg.word2 := data
     msg.word3 := eaddr
+  }
+
+  def mkTrace_OTHER(msg: TraceMessage, pc: UInt, isize: UInt, instruction: UInt) = {
+    msg.op := TraceOP.trace_other
+    msg.pc := pc
+    msg.instr_size := TraceInstrSize.isize_32bit
+    msg.instr := instruction
   }
 
   def mkTrace_RESET(msg: TraceMessage) = {
@@ -154,10 +175,6 @@ class TraceConverter()(implicit p: Parameters) extends Module {
     mkTrace_RESET(io.traceMsg)
   }
 
-  when (isAMOInsn) {
-    printf("Insn is AMO!\n")
-  }
-
   when (t.valid && !t.exception) {
     isMsgStored := 0
     when (wfd) {
@@ -166,15 +183,24 @@ class TraceConverter()(implicit p: Parameters) extends Module {
       .elsewhen (wxd && rd =/= UInt(0) && has_data) {
         mkTrace_I(io.traceMsg, isLoad, t.iaddr, UInt(1), t.insn, rd, rf_wdata, stored_addr)
         printf ("C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
+        assert(branch === false)
+        when (isAMOInsn) {
+          mkTrace_AMO(io.traceMsg, t.iaddr, UInt(1), t.insn, rd, rf_wdata, stored_data, stored_addr)
+        }
       }
       .elsewhen (wxd && rd =/= UInt(0) && !has_data) {
         mkTrace_I(storedMsg, isLoad, t.iaddr, UInt(1), t.insn, rd, rf_wdata, stored_addr)
+        assert(branch === false)
         isMsgStored := 1
         printf("C0: %d : Stored Message for rd = %d\n", time, rd)
         printf ("C0: %d : %d 0x%x (0x%x) x%d p%d 0xXXXXXXXXXXXXXXXX addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rd, stored_addr)
       }
       .otherwise {
         printf ("C0: %d : %d 0x%x (0x%x)\n", time, t.priv, t.iaddr, t.insn)
+        when (branch) {
+          printf ("C0: %d : Branch! npc = 0x%x\n", time, npc)
+          mkTrace_OTHER(io.traceMsg, t.iaddr, UInt(1), t.insn)
+        }
         when (isLoad) { printf("Is Load!\n") }
         when (isStore) { printf("Is Store! 0x%x @ 0x%x\n", stored_data, stored_addr)
           mkTrace_STORE(io.traceMsg, t.iaddr, UInt(1), t.insn, stored_data, stored_addr) }
@@ -185,11 +211,13 @@ class TraceConverter()(implicit p: Parameters) extends Module {
     isMsgStored := 0
     io.traceMsg := storedMsg
     io.traceMsg.word1 := rf_wdata
+    assert(branch === false)
     printf("C0: %d : Stored 0x%x into reg %d from 0x%x\n", time, rf_wdata, storedMsg.rd, stored_addr)
   }
 
   when (ll_wen && rf_waddr =/= UInt(0)) {
     printf ("C0: %d : x%d p%d 0x%x\n", time, rf_waddr, rf_waddr, rf_wdata)
+    assert(branch === false)
     when (isLoad) { printf("Is Load!\n") }
     when (isStore) { printf("Is Store 2! 0x%x @ 0x%x\n", stored_data, stored_addr)
       mkTrace_STORE(io.traceMsg, t.iaddr, UInt(1), t.insn, stored_data, stored_addr) }
