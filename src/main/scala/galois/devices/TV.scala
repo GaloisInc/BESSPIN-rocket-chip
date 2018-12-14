@@ -91,6 +91,9 @@ class TraceConverter()(implicit p: Parameters) extends Module {
   val stored_data = Reg(next = Reg(next = dmem_data))
   val mem_reg_store = Wire(Bool())
   val mem_reg_load = Wire(Bool())
+  val mem = Wire(Bool())
+  val mem_cmd = Wire(Bits(width = 5))
+  val isAMOInsn = mem && (isAMO(mem_cmd) || mem_cmd.isOneOf(M_XLR, M_XSC))
   val isLoad = Reg(next = mem_reg_load)
   val isStore = Reg(next = mem_reg_store)
 
@@ -129,6 +132,7 @@ class TraceConverter()(implicit p: Parameters) extends Module {
 
   def mkTrace_RESET(msg: TraceMessage) = {
     msg.op := TraceOP.trace_reset
+    printf("Reset Trace\n")
   }
 
   /*
@@ -150,13 +154,17 @@ class TraceConverter()(implicit p: Parameters) extends Module {
     mkTrace_RESET(io.traceMsg)
   }
 
+  when (isAMOInsn) {
+    printf("Insn is AMO!\n")
+  }
+
   when (t.valid && !t.exception) {
     isMsgStored := 0
     when (wfd) {
       printf ("C0: %d : %d 0x%x (0x%x) f%d p%d 0xXXXXXXXXXXXXXXXX\n", time, t.priv, t.iaddr, t.insn, rd, rd+UInt(32))
     }
       .elsewhen (wxd && rd =/= UInt(0) && has_data) {
-       mkTrace_I(io.traceMsg, isLoad, t.iaddr, UInt(1), t.insn, rd, rf_wdata, stored_addr)
+        mkTrace_I(io.traceMsg, isLoad, t.iaddr, UInt(1), t.insn, rd, rf_wdata, stored_addr)
         printf ("C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
       }
       .elsewhen (wxd && rd =/= UInt(0) && !has_data) {
