@@ -87,6 +87,8 @@ class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSub
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.mem_reg_load, Seq(traceConverter.mem_reg_load))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.mem, Seq(traceConverter.mem))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.mem_cmd, Seq(traceConverter.mem_cmd))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.branch, Seq(traceConverter.branch))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.mem_npc, Seq(traceConverter.mem_npc))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.coreMonitorBundle.time, Seq(traceConverter.time))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_set_sboard, Seq(traceConverter.wb_set_sboard))
 
