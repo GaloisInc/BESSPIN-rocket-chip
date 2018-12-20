@@ -20,9 +20,9 @@ class P1Config extends Config(
   new WithJtagDTMSystem ++
   new WithoutTLMonitors ++
   // External Interrupts are handled by Bluespec's PLIC
-  new WithExtCLINT ++
-  new WithExtPLIC ++
-  new WithNExtTopInterrupts(0) ++
+  // new WithExtCLINT ++
+  // new WithExtPLIC ++
+  new WithNExtTopInterrupts(2) ++
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
   new WithNSmallCores(1) ++

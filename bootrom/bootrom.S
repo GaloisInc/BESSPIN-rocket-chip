@@ -4,10 +4,12 @@
 .globl _start
 _start:
   csrwi 0x7c1, 0 // disable chicken bits
-  li s0, DRAM_BASE
   csrr a0, mhartid
   la a1, _dtb
-  jr s0
+  csrwi mie, 0
+1:
+  wfi
+  j 1b
 
 .section .text.hang, "ax", @progbits
 .globl _hang
