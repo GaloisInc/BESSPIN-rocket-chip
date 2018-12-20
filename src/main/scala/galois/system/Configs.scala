@@ -27,6 +27,7 @@ class P1Config extends Config(
   new WithL1DCacheSets(64) ++
   new WithNSmallCores(1) ++
   new WithDTS("galois,rocketchip-p1", Nil) ++
+  new WithBootROMFile("./bootrom/bootrom.img") ++
   new BaseConfig
 )
 
