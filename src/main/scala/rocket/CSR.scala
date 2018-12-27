@@ -345,6 +345,17 @@ class CSRFile(
   io.bp := reg_bp take nBreakpoints
   io.pmp := reg_pmp.map(PMP(_))
 
+  val mip_update = Wire(Bool())
+  val mip_value = Wire(UInt(width = xLen))
+
+  mip_value := mip.asUInt()
+
+  when (mip.asUInt() =/= reg_mip.asUInt()) {
+    mip_update := true
+  }.otherwise {
+    mip_update := false
+  }
+
   val isaMaskString =
     (if (usingMulDiv) "M" else "") +
     (if (usingAtomics) "A" else "") +
@@ -661,6 +672,10 @@ class CSRFile(
   when (io.fcsr_flags.valid) {
     reg_fflags := reg_fflags | io.fcsr_flags.bits
     set_fs_dirty := true
+  }
+
+  when (true) {
+    printf("mip = 0x%x\n", mip.asUInt())
   }
 
   val csr_wen = io.rw.cmd.isOneOf(CSR.S, CSR.C, CSR.W)

@@ -69,9 +69,9 @@ class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSub
   traceout := outer.tiles(0).module.trace.get
 
   val tvencoder = Module(new TVEncoder()(outer.tiles(0).p))
-  tvencoder.io.traceData := (outer.tiles(0).module.trace.get)(0)
 
   val traceConverter = Module(new TraceConverter()(outer.tiles(0).p))
+  tvencoder.io.traceData <> traceConverter.io.traceMsg
   traceConverter.io.traceData := (outer.tiles(0).module.trace.get)(0)
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_waddr, Seq(traceConverter.rd))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.wfd, Seq(traceConverter.wfd))
@@ -88,7 +88,15 @@ class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSub
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.mem, Seq(traceConverter.mem))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.mem_cmd, Seq(traceConverter.mem_cmd))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.branch, Seq(traceConverter.branch))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_ctrl.csr, Seq(traceConverter.wb_csr))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.mem_npc, Seq(traceConverter.mem_npc))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.insn_ret, Seq(traceConverter.csr_insn_ret))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.read_mstatus, Seq(traceConverter.csr_mstatus))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.io.rw.addr, Seq(traceConverter.csr_addr))
+  // Can't seem to use mip directly...
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.mip_update, Seq(traceConverter.mip_update))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.mip_value, Seq(traceConverter.mipval))
+  BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.io.rw.wdata, Seq(traceConverter.csr_wdata))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.coreMonitorBundle.time, Seq(traceConverter.time))
   BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.wb_set_sboard, Seq(traceConverter.wb_set_sboard))
 
