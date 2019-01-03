@@ -1,11 +1,12 @@
-Rocket Chip Generator :rocket: [![Build Status](https://travis-ci.org/freechipsproject/rocket-chip.svg?branch=master)](https://travis-ci.org/freechipsproject/rocket-chip)
+Galois Rocket Chip Generator :rocket: 
 =====================
 
 This repository contains the Rocket chip generator necessary to instantiate
-the RISC-V Rocket Core. For more information on Rocket Chip, please consult our [technical report](http://www.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-17.html).
+the RISC-V Rocket Core. For more information on Rocket Chip, please consult this [technical report](http://www.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-17.html).
 
 ## Table of Contents
 
++ [SSITH Specific Information](#ssith)
 + [Quick instructions](#quick) for those who want to dive directly into the details without knowing exactly what's in the repository.
 + [What's in the Rocket chip generator repository?](#what)
 + [How should I use the Rocket chip generator?](#how)
@@ -15,6 +16,37 @@ the RISC-V Rocket Core. For more information on Rocket Chip, please consult our 
 + [How can I parameterize my Rocket chip?](#param)
 + [Debugging with GDB](#debug)
 + [Contributors](#contributors)
+
+## <a name="ssith"></a> SSITH Specific Information
+
+The Chisel P1 and P2 processors are based on rocket-chip 
+and will be compiled to verilog using this modified branch 
+of the rocket-chip generator.
+
+You can follow the general instructions below for checking out
+and setting up the generator. When producing either the verilog
+or verilator products, use the CONFIG and PROJECT variables to control
+which processor is generated:
+
+#### P1
+
+   $ cd vsim (or emulator)
+   $ make PROJECT=galois.system CONFIG=P1Config
+
+#### P2
+
+   $ cd vsim (or emulator)
+   $ make PROJECT=galois.system CONFIG=P2Config
+
+These are processor-only releases and will be repackaged into a final GFE
+system at a later time.
+
+Current caveats:
++ There is no boot ROM
+    + The boot ROM will live on the GFE AXI fabric. Simulations can still be performed using the debug module
++ The reset vector is subject to change
++ Tandem verification (SVF) is not yet available
++ The DTM may be replaced at the GFE system level with a custom implementation
 
 ## <a name="quick"></a> Quick Instructions
 
