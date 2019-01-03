@@ -30,8 +30,8 @@ which processor is generated:
 
 #### P1
 
-   $ cd vsim (or emulator)
-   $ make PROJECT=galois.system CONFIG=P1Config
+    $ cd vsim (or emulator)
+    $ make PROJECT=galois.system CONFIG=P1Config
 
 #### P2
 
