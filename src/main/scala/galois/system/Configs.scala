@@ -11,23 +11,20 @@ import galois.subsystem._
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
-class P1Config extends Config(
-  new WithRV32 ++ 
-  new WithoutFPU ++
+class P2Config extends Config(
   new WithoutTLMonitors ++
-  new WithoutPLIC ++
-  new WithL1ICacheSets(64) ++
-  new WithL1DCacheSets(64) ++
-  new WithNSmallCores(1) ++
+  new WithNExtTopInterrupts(2) ++
+  new WithL1ICacheSets(32) ++
+  new WithL1DCacheSets(32) ++
+  new WithNBigCores(1) ++
   new WithEdgeDataBits(64) ++
-  new WithNExtTopInterrupts(1) ++
-  new WithDTS("galois,rocketchip-p1", Nil) ++
+  new WithDTS("galois,rocketchip-p2", Nil) ++
   new BaseConfig
 )
 
-class P1TVConfig extends Config(
+class P2TVConfig extends Config(
   new WithTandemVerification(true) ++
-  new P1Config
+  new P2Config
 )
 
 class BaseConfig extends Config(
@@ -38,14 +35,14 @@ class BaseConfig extends Config(
   new BaseSubsystemConfig()
 )
 
-class DefaultConfig extends Config(new P1Config)
+class DefaultConfig extends Config(new P2Config)
 
-class P1FPGAConfig extends Config(
+class P2FPGAConfig extends Config(
   new WithXilinxJtag ++
-  new P1Config
+  new P2Config
 )
 
-class DefaultFPGAConfig extends Config(new P1FPGAConfig)
+class DefaultFPGAConfig extends Config(new P2FPGAConfig)
 
 class WithExtCLINT extends Config((site, here, up) => {
   case CLINTKey => None
