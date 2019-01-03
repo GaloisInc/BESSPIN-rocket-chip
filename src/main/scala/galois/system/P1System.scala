@@ -41,6 +41,7 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
 }
 
 class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
+    with HasGaloisGFEResetVectorImp
     with CanHaveMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
     with HasExtInterruptsModuleImp
