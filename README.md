@@ -1,4 +1,4 @@
-Galois Rocket Chip Generator :rocket: 
+SSITH Rocket Chip Generator :rocket: 
 =====================
 
 This repository contains the Rocket chip generator necessary to instantiate
@@ -35,16 +35,16 @@ which processor is generated:
 
 #### P2
 
-   $ cd vsim (or emulator)
-   $ make PROJECT=galois.system CONFIG=P2Config
+    $ cd vsim (or emulator)
+    $ make PROJECT=galois.system CONFIG=P2Config
 
 These are processor-only releases and will be repackaged into a final GFE
 system at a later time.
 
 Current caveats:
-+ There is no boot ROM
-    + The boot ROM will live on the GFE AXI fabric. Simulations can still be performed using the debug module
-+ The reset vector is subject to change
++ The boot ROM will be external
+    + The boot ROM lives on the GFE AXI fabric. Simulations can still be performed using the debug module
++ The reset vector and memory map are subject to change
 + Tandem verification (SVF) is not yet available
 + The DTM may be replaced at the GFE system level with a custom implementation
 
