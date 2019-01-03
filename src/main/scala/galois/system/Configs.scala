@@ -14,15 +14,13 @@ import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
 
-class P1Config extends Config(
-  new WithRV32 ++ 
-  new WithoutFPU ++
+class P2Config extends Config(
   new WithoutTLMonitors ++
   new WithNExtTopInterrupts(2) ++
-  new WithL1ICacheSets(64) ++
-  new WithL1DCacheSets(64) ++
-  new WithNSmallCores(1) ++
-  new WithDTS("galois,rocketchip-p1", Nil) ++
+  new WithL1ICacheSets(32) ++
+  new WithL1DCacheSets(32) ++
+  new WithNBigCores(1) ++
+  new WithDTS("galois,rocketchip-p2", Nil) ++
   new BaseConfig
 )
 
@@ -34,14 +32,14 @@ class BaseConfig extends Config(
   new BaseSubsystemConfig()
 )
 
-class DefaultConfig extends Config(new P1Config)
+class DefaultConfig extends Config(new P2Config)
 
-class P1FPGAConfig extends Config(
+class P2FPGAConfig extends Config(
   new WithJtagDTMSystem ++
-  new P1Config
+  new P2Config
 )
 
-class DefaultFPGAConfig extends Config(new P1FPGAConfig)
+class DefaultFPGAConfig extends Config(new P2FPGAConfig)
 
 class WithExtCLINT extends Config((site, here, up) => {
   case CLINTKey => None
