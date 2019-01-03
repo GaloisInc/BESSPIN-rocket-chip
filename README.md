@@ -47,6 +47,7 @@ Current caveats:
 + The reset vector and memory map are subject to change
 + Tandem verification (SVF) is not yet available
 + The DTM may be replaced at the GFE system level with a custom implementation
++ Currently 2 external interrupts. Will increase to 16 with a later GFE release
 
 ## <a name="quick"></a> Quick Instructions
 
