@@ -30,11 +30,13 @@ which processor is generated:
 
 #### P1
 
+    $ git checkout ssith-p1
     $ cd vsim (or emulator)
     $ make PROJECT=galois.system CONFIG=P1Config
 
 #### P2
 
+    $ git checkout ssith-p2
     $ cd vsim (or emulator)
     $ make PROJECT=galois.system CONFIG=P2Config
 
