@@ -27,8 +27,8 @@ class P1Config extends Config(
 )
 
 class BaseConfig extends Config(
-  new WithDefaultMemPort() ++
-  new WithDefaultMMIOPort() ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new WithNoSlavePort ++
   new WithTimebase(BigInt(1000000)) ++ // 1 MHz
   new BaseSubsystemConfig()
