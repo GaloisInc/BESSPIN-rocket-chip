@@ -22,6 +22,7 @@ class P1Config extends Config(
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
   new WithNSmallCores(1) ++
+  new WithEdgeDataBits(64) ++
   new WithDTS("galois,rocketchip-p1", Nil) ++
   new BaseConfig
 )
