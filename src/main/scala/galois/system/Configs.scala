@@ -12,7 +12,7 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 
-class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
+class WithJtagDTMSystem extends galois.subsystem.WithJtagDTM
 
 class P1Config extends Config(
   new WithRV32 ++ 
@@ -37,7 +37,7 @@ class BaseConfig extends Config(
 class DefaultConfig extends Config(new P1Config)
 
 class P1FPGAConfig extends Config(
-  new WithJtagDTMSystem ++
+  new WithXilinxJtagDTM ++
   new P1Config
 )
 

@@ -80,7 +80,7 @@ class BSCANE2(chain: Int) extends BlackBox(Map("DISABLE_JTAG" -> StringParam("FA
     })
 }
 
-class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
+class JtagTapControllerXilinx(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
   require(irLength == 6)  // For Xilinx Artix7 BSCAN
    val io = IO(new JtagControllerIO(irLength))
    val chain02 = Module(new BSCANE2(0x1));
@@ -108,7 +108,7 @@ class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val 
   * Misc notes:
   * - Figure 6-3 and 6-4 provides examples with timing behavior
   */
-class JtagTapControllerASIC(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
+class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
   require(irLength >= 2)  // 7.1.1a
 
   val io = IO(new JtagControllerIO(irLength))
