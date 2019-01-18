@@ -12,16 +12,12 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 
-class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
+class WithJtagDTMSystem extends galois.subsystem.WithJtagDTM
 
 class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
-  new WithJtagDTMSystem ++
   new WithoutTLMonitors ++
-  // External Interrupts are handled by Bluespec's PLIC
-  // new WithExtCLINT ++
-  // new WithExtPLIC ++
   new WithNExtTopInterrupts(2) ++
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
@@ -32,8 +28,8 @@ class P1Config extends Config(
 )
 
 class BaseConfig extends Config(
-  new WithDefaultMemPort() ++
-  new WithDefaultMMIOPort() ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new WithNoSlavePort ++
   new WithTimebase(BigInt(1000000)) ++ // 1 MHz
   new BaseSubsystemConfig()
@@ -41,7 +37,10 @@ class BaseConfig extends Config(
 
 class DefaultConfig extends Config(new P1Config)
 
-class P1FPGAConfig extends Config(new P1Config)
+class P1FPGAConfig extends Config(
+  new WithXilinxJtagDTM ++
+  new P1Config
+)
 
 class DefaultFPGAConfig extends Config(new P1FPGAConfig)
 
