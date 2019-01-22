@@ -9,7 +9,7 @@ import scala.collection.SortedMap
 import Chisel._
 import chisel3.core.{Input, Output}
 import chisel3.util._
-import chisel3.experimental._
+import chisel3.experimental.withReset
 
 import freechips.rocketchip.config.Parameters
 
@@ -59,48 +59,6 @@ class JtagControllerIO(irLength: Int) extends JtagBlockIO(irLength, false) {
 
   override def cloneType = new JtagControllerIO(irLength).asInstanceOf[this.type]
 }
-
-/* JTAG state machine Xilinx version */
-// BSCANE2: Boundary-Scan User Instruction
-//          Artix-7
-// Xilinx HDL Language Template, version 2015.4
-class BSCANE2(chain: Int) extends BlackBox(Map("DISABLE_JTAG" -> StringParam("FALSE"), "JTAG_CHAIN" -> IntParam(chain))) {
-  val io = IO(new Bundle {
-    val CAPTURE = Output(Bool())
-    val DRCK = Output(Bool())
-    val RESET = Output(Bool())
-    val RUNTEST = Output(Bool())
-    val SEL = Output(Bool())
-    val SHIFT = Output(Bool())
-    val TCK = Output(Clock())
-    val TDI = Output(Bool())
-    val TMS = Output(Bool())
-    val UPDATE = Output(Bool())
-    val TDO = Input(Bool())
-    })
-}
-
-class JtagTapControllerXilinx(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
-  require(irLength == 6)  // For Xilinx Artix7 BSCAN
-   val io = IO(new JtagControllerIO(irLength))
-   val chain02 = Module(new BSCANE2(0x1));
-  val chain22 = Module(new BSCANE2(0x3));
-  val chain23 = Module(new BSCANE2(0x4));
-   chain02.io.TDO <> io.dataChainIn.data
-  chain22.io.TDO <> io.dataChainIn.data
-  chain23.io.TDO <> io.dataChainIn.data
-  io.dataChainOut.data := (chain02.io.SEL & chain02.io.TDI) | (chain22.io.SEL & chain22.io.TDI) | (chain23.io.SEL & chain23.io.TDI)
-  io.jtag.TDO.driven := true.B
-  io.output.instruction := (chain02.io.SEL * 9.asUInt(irLength.W)) +
-                           (chain22.io.SEL * 34.asUInt(irLength.W)) +
-                           (chain23.io.SEL * 35.asUInt(irLength.W))
-  io.output.reset := chain02.io.RESET | chain22.io.RESET | chain23.io.RESET
-  io.dataChainOut.shift := chain02.io.SHIFT | chain22.io.SHIFT | chain23.io.SHIFT
-  io.jtag.TDO.data := io.dataChainOut.data
-  io.dataChainOut.capture := chain02.io.CAPTURE | chain22.io.CAPTURE | chain23.io.CAPTURE
-  io.dataChainOut.update := chain02.io.UPDATE | chain22.io.UPDATE | chain23.io.UPDATE
-}
-
 
 /** JTAG TAP controller internal block, responsible for instruction decode and data register chain
   * control signal generation.

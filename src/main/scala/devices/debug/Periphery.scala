@@ -16,19 +16,12 @@ import freechips.rocketchip.tilelink._
 /** Options for possible debug interfaces */
 case object ExportDebugDMI extends Field[Boolean](true)
 case object ExportDebugJTAG extends Field[Boolean](false)
-case object ExportXilinxJTAG extends Field[Boolean](false)
-
-/** Dummy IO wrapper for Xilinx JTAG. Internal BSCANE2 blocks will be directly instantiated **/
-class XilinxJTAGIO extends SystemJTAGIO {
-  val xilinx = Bool(OUTPUT)
-}
 
 /** A wrapper bundle containing one of the two possible debug interfaces */
 
 class DebugIO(implicit val p: Parameters) extends ParameterizedBundle()(p) with CanHavePSDTestModeIO {
   val clockeddmi = p(ExportDebugDMI).option(new ClockedDMIIO().flip)
   val systemjtag = p(ExportDebugJTAG).option(new SystemJTAGIO)
-  val xilinxjtag = p(ExportXilinxJTAG).option(new XilinxJTAGIO)
   val ndreset    = Bool(OUTPUT)
   val dmactive   = Bool(OUTPUT)
 }
@@ -55,12 +48,9 @@ trait HasPeripheryDebugModuleImp extends LazyModuleImp {
   require(!(debug.clockeddmi.isDefined && debug.systemjtag.isDefined),
     "You cannot have both DMI and JTAG interface in HasPeripheryDebugModuleImp")
 
-  require(!(debug.systemjtag.isDefined && debug.xilinxjtag.isDefined),
-    "You cannot have both SystemJTAG and Xilinx JTAG defined simultaneously!")
-
   debug.clockeddmi.foreach { dbg => outer.debug.module.io.dmi <> dbg }
 
-  val dtm = Seq(debug.systemjtag, debug.xilinxjtag).flatten.map { instantiateJtagDTM(_) }
+  val dtm = debug.systemjtag.map { instantiateJtagDTM(_) }
 
   debug.ndreset  := outer.debug.module.io.ctrl.ndreset
   debug.dmactive := outer.debug.module.io.ctrl.dmactive
@@ -71,41 +61,19 @@ trait HasPeripheryDebugModuleImp extends LazyModuleImp {
   def instantiateJtagDTM(sj: SystemJTAGIO): DebugTransportModuleJTAG = {
 
     val dtm = Module(new DebugTransportModuleJTAG(p(DebugModuleParams).nDMIAddrSize, p(JtagDTMKey)))
+    dtm.io.jtag <> sj.jtag
+
+    dtm.clock          := sj.jtag.TCK
+    dtm.io.jtag_reset  := sj.reset
+    dtm.io.jtag_mfr_id := sj.mfr_id
+    dtm.reset          := dtm.io.fsmReset
+
+    outer.debug.module.io.dmi.dmi <> dtm.io.dmi
+    outer.debug.module.io.dmi.dmiClock := sj.jtag.TCK
 
     val psd = debug.psd.getOrElse(Wire(new PSDTestMode).fromBits(0.U))
     outer.debug.module.io.psd <> psd
-
-    if (p(ExportXilinxJTAG)) {
-      val chain2 = Module(new BSCANE2(0x2));
-      val chain3 = Module(new BSCANE2(0x3));
-
-      dtm.io.jtag.TCK := chain2.io.TCK
-      dtm.io.jtag.TMS := chain2.io.TMS
-      // May need to revisit these connections. Assuming the BSCANE2 blocks work independently and do not need
-      // to be chained together
-      dtm.io.jtag.TDI := chain2.io.TDI & chain2.io.SEL | chain3.io.TDI & chain3.io.SEL
-      chain3.io.TDO := dtm.io.jtag.TDO.data
-      chain2.io.TDO := dtm.io.jtag.TDO.data
-
-      // Other connections
-      dtm.clock := chain2.io.TCK
-      dtm.io.jtag_reset := chain2.io.RESET
-      dtm.io.jtag_mfr_id := 0.U(11.W)
-      outer.debug.module.io.dmi.dmiClock := chain2.io.TCK
-      outer.debug.module.io.dmi.dmiReset := ResetCatchAndSync(chain2.io.TCK, chain2.io.RESET, "dmiResetCatch", psd)
-    } else {
-      dtm.io.jtag <> sj.jtag
-
-      dtm.clock := sj.jtag.TCK
-      dtm.io.jtag_reset := sj.reset
-      dtm.io.jtag_mfr_id := sj.mfr_id
-      outer.debug.module.io.dmi.dmiClock := sj.jtag.TCK
-      outer.debug.module.io.dmi.dmiReset := ResetCatchAndSync(sj.jtag.TCK, sj.reset, "dmiResetCatch", psd)
-    }
-    dtm.reset := dtm.io.fsmReset
-
-    outer.debug.module.io.dmi.dmi <> dtm.io.dmi
-
+    outer.debug.module.io.dmi.dmiReset := ResetCatchAndSync(sj.jtag.TCK, sj.reset, "dmiResetCatch", psd)
     dtm
   }
 }

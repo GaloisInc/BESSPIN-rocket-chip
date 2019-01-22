@@ -39,7 +39,7 @@ class BaseConfig extends Config(
 class DefaultConfig extends Config(new P1Config)
 
 class P1FPGAConfig extends Config(
-  new WithXilinxJtagDTM ++
+  new WithJtagDTM ++
   new P1Config
 )
 
