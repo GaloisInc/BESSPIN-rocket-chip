@@ -7,6 +7,7 @@ import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
 import galois.subsystem._
+import galois.devices.tandemverification._
 import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params,
   BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
 import freechips.rocketchip.devices.tilelink._
@@ -15,6 +16,7 @@ import freechips.rocketchip.util.DontTouch
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
 class P1System(implicit p: Parameters) extends GaloisSubsystem
   with HasAsyncExtInterrupts
+  with CanHaveTandemVerification
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
 {
@@ -45,4 +47,5 @@ class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModule
     with CanHaveGFEMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
     with HasExtInterruptsModuleImp
+    with CanHaveTandemVerificationModuleImp
     with DontTouch

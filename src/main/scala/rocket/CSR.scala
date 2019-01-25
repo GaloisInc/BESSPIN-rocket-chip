@@ -576,7 +576,12 @@ class CSRFile(
   val noCause :: mCause :: hCause :: sCause :: uCause :: Nil = Enum(5)
   val xcause_dest = Wire(init = noCause)
 
+  val trap_mstatus = Wire(init=new MStatus().fromBits(0))
+  val trap_mstatus_uint = Wire(UInt(width = xLen))
+
   when (exception) {
+    trap_mstatus := reg_mstatus
+    trap_mstatus_uint := trap_mstatus.asUInt
     when (trapToDebug) {
       when (!reg_debug) {
         reg_debug := true
@@ -593,6 +598,9 @@ class CSRFile(
       reg_mstatus.spie := reg_mstatus.sie
       reg_mstatus.spp := reg_mstatus.prv
       reg_mstatus.sie := false
+      trap_mstatus.spie := reg_mstatus.sie
+      trap_mstatus.spp := reg_mstatus.prv
+      trap_mstatus.sie := false
       new_prv := PRV.S
     }.otherwise {
       reg_mepc := epc
@@ -602,6 +610,9 @@ class CSRFile(
       reg_mstatus.mpie := reg_mstatus.mie
       reg_mstatus.mpp := trimPrivilege(reg_mstatus.prv)
       reg_mstatus.mie := false
+      trap_mstatus.mpie := reg_mstatus.mie
+      trap_mstatus.mpp := trimPrivilege(reg_mstatus.prv)
+      trap_mstatus.mie := false
       new_prv := PRV.M
     }
   }
@@ -674,9 +685,9 @@ class CSRFile(
     set_fs_dirty := true
   }
 
-  when (true) {
-    printf("mip = 0x%x\n", mip.asUInt())
-  }
+//  when (true) {
+//    printf("mip = 0x%x\n", mip.asUInt())
+//  }
 
   val csr_wen = io.rw.cmd.isOneOf(CSR.S, CSR.C, CSR.W)
   io.csrw_counter := Mux(coreParams.haveBasicCounters && csr_wen && (io.rw.addr.inRange(CSRs.mcycle, CSRs.mcycle + CSR.nCtr) || io.rw.addr.inRange(CSRs.mcycleh, CSRs.mcycleh + CSR.nCtr)), UIntToOH(io.rw.addr(log2Ceil(CSR.nCtr+nPerfCounters)-1, 0)), 0.U)
