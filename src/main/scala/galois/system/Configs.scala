@@ -11,7 +11,6 @@ import galois.subsystem._
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
-
 class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
@@ -24,6 +23,11 @@ class P1Config extends Config(
   new WithNExtTopInterrupts(1) ++
   new WithDTS("galois,rocketchip-p1", Nil) ++
   new BaseConfig
+)
+
+class P1TVConfig extends Confg(
+  new WithTandemVerification(true) ++
+  new P1Config
 )
 
 class BaseConfig extends Config(

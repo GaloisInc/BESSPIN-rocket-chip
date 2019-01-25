@@ -7,14 +7,14 @@ import Chisel._
 import freechips.rocketchip.config._
 import freechips.rocketchip.devices.debug._
 import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.subsystem.{ExtIn, NExtTopInterrupts, ExtMem, MemoryPortParams, ExtBus, SlavePortParams, MasterPortParams, SystemBusParams, PeripheryBusParams, FrontBusParams, SystemBusKey, ControlBusKey, PeripheryBusKey, MemoryBusKey, FrontBusKey, BankedL2Key,
-  CacheBlockBytes, MemoryBusParams, BroadcastKey, RocketTilesKey, RocketCrossingKey, RocketCrossingParams, TileMasterPortParams}
+import freechips.rocketchip.subsystem.{BankedL2Key, BroadcastKey, CacheBlockBytes, ControlBusKey, ExtBus, ExtIn, ExtMem, FrontBusKey, FrontBusParams, MasterPortParams, MemoryBusKey, MemoryBusParams, MemoryPortParams, NExtTopInterrupts, PeripheryBusKey, PeripheryBusParams, RocketCrossingKey, RocketCrossingParams, RocketTilesKey, SlavePortParams, SystemBusKey, SystemBusParams, TileMasterPortParams}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util._
 import galois.devices.xilinxAddrs
+import galois.devices.tandemverification._
 
 class BaseSubsystemConfig extends Config ((site, here, up) => {
   // Tile parameters
@@ -381,4 +381,9 @@ class WithScratchpadsOnly extends Config((site, here, up) => {
         nWays = 1,
         scratch = Some(0x80000000L))))
   }
+})
+
+// Adds Tandem Verification with default parameters
+class WithTandemVerification(dumpTrace: Boolean = false) extends Config((site, here, up) => {
+  case TandemV => Some(TandemVerificationParams(dumpTrace = dumpTrace))
 })
