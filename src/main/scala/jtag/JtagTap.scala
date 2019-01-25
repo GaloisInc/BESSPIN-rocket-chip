@@ -71,16 +71,21 @@ class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val 
 
   val io = IO(new JtagControllerIO(irLength))
 
+  // Temporary change to check Xilinx BSCANE2 compatibility. Should add a parameter to selectively change registers
   val tdo = Wire(Bool())  // 4.4.1c TDI should appear here uninverted after shifting
   val tdo_driven = Wire(Bool())
-  io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
-  io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  io.jtag.TDO.data := tdo
+  io.jtag.TDO.driven := tdo_driven
+//  io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
+//  io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
 
   //
   // JTAG state machine
   //
 
   val currState = Wire(JtagState.State.chiselType)
+
+//  printf("[TAP] TMS = %x | TDI = %x | TDO = %x | state = 0x%x\n", io.jtag.TMS, io.jtag.TDI, io.jtag.TDO.data, currState)
 
   // At this point, the TRSTn should already have been
   // combined with any POR, and it should also be
