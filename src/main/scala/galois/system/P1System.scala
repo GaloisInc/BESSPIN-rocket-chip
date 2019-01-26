@@ -17,7 +17,6 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
   with HasAsyncExtInterrupts
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
-    with HasPeripheryBootROM
 {
   override lazy val module = new P1SystemModuleImp(this)
 
@@ -46,5 +45,4 @@ class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModule
     with CanHaveGFEMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
     with HasExtInterruptsModuleImp
-    with HasPeripheryBootROMModuleImp
     with DontTouch

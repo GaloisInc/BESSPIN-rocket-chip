@@ -24,7 +24,6 @@ class P1Config extends Config(
   new WithNSmallCores(1) ++
   new WithEdgeDataBits(64) ++
   new WithDTS("galois,rocketchip-p1", Nil) ++
-  new WithBootROMFile("./bootrom/bootrom.img") ++
   new BaseConfig
 )
 
@@ -39,7 +38,7 @@ class BaseConfig extends Config(
 class DefaultConfig extends Config(new P1Config)
 
 class P1FPGAConfig extends Config(
-  new WithJtagDTM ++
+  new WithJtagDTMSystem ++
   new P1Config
 )
 
