@@ -8,7 +8,7 @@ import freechips.rocketchip.subsystem._
 /** Subsystem will power-on running at 0xC000_0000 (AXI Boot ROM) */
 trait HasGaloisGFEResetVectorImp extends LazyModuleImp
   with HasResetVectorWire {
-  global_reset_vector := 0xC0000000L.U
+  global_reset_vector := 0x70000000L.U
 }
 
 trait CanHaveGFEMasterAXI4MemPortModuleImp extends CanHaveMasterAXI4MemPortModuleImp {
