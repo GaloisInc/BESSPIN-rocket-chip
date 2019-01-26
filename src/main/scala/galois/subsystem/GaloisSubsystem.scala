@@ -55,7 +55,8 @@ class GaloisSubsystem(implicit p: Parameters) extends BaseSubsystem
 }
 
 class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSubsystemModuleImp(_outer)
-    with HasGaloisTilesModuleImp {
+    with HasGaloisTilesModuleImp
+    with HasGaloisGFEResetVectorImp {
   tile_inputs.zip(outer.hartIdList).foreach { case(wire, i) =>
     wire.clock := clock
     wire.reset := reset
