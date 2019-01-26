@@ -18,7 +18,7 @@ class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
   new WithoutTLMonitors ++
-  new WithNExtTopInterrupts(2) ++
+  new WithoutPLIC ++
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
   new WithNSmallCores(1) ++
@@ -51,4 +51,9 @@ class WithExtCLINT extends Config((site, here, up) => {
 class WithExtPLIC extends Config((site, here, up) => {
   case PLICKey => None
   case ExtPLICKey => Some(PLICParams())
+})
+
+class WithoutPLIC extends Config((site, here, up) => {
+  case PLICKey => None
+  case ExtPLICKey => None
 })
