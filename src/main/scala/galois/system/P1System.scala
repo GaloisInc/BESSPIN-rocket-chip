@@ -7,10 +7,11 @@ import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
 import galois.subsystem._
-import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params,
+import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params, NExtTopInterrupts,
   BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
+import galois.devices.ExtPLICKey
 
 /** P1 top with periphery devices and ports, and a Rocket subsystem */
 class P1System(implicit p: Parameters) extends GaloisSubsystem
@@ -37,6 +38,9 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
   if (nBanks != 0) {
     sbus.coupleTo("coherence_manager") { in :*= _ }
     mbus.coupleFrom("coherence_manager") { _ :=* BankBinder(mbus.blockBytes * (nBanks-1)) :*= out }
+  }
+  if (p(PLICKey).isEmpty & p(ExtPLICKey).isEmpty) {
+    require(p(NExtTopInterrupts) == 1, "Must include one single external interrupt when not instantiating the PLIC")
   }
 }
 
