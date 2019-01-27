@@ -8,7 +8,7 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.tilelink._
 import galois.subsystem._
 import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params, NExtTopInterrupts,
-  BankedL2Key, CanHaveMasterAXI4MemPortModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
+  BankedL2Key, HasRTCModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
 import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 import galois.devices.ExtPLICKey
@@ -45,6 +45,7 @@ class P1System(implicit p: Parameters) extends GaloisSubsystem
 }
 
 class P1SystemModuleImp[+L <: P1System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
+    with HasRTCModuleImp
     with HasGaloisGFEResetVectorImp
     with CanHaveGFEMasterAXI4MemPortModuleImp
     with CanHaveMasterAXI4MMIOPortModuleImp
