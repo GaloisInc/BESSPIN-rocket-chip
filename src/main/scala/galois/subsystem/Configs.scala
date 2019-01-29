@@ -283,10 +283,10 @@ class WithJtagDTM extends Config ((site, here, up) => {
 class WithXilinxJtag extends Config ((site, here, up) => {
   case ExportDebugDMI => false
   case ExportDebugJTAG => true
-  // Xilinx requires an IR length of 18 and special register addresses
+  // Xilinx requires an IR length of 18, special register addresses, and latching TDO on positive edge
   case JtagDTMKey => new JtagDTMConfig(
     idcodeVersion = 0, idcodePartNum = 0, idcodeManufId = 0, debugIdleCycles = 5,
-    irLength = 18, registerAddrs = new xilinxAddrs()
+    irLength = 18, tdoOnNegEdge = false, registerAddrs = new xilinxAddrs()
   )
 })
 
