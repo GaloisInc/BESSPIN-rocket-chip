@@ -56,8 +56,11 @@ class WithExtPLIC extends Config((site, here, up) => {
   case PLICKey => None
   case ExtPLICKey => Some(PLICParams())
 })
+<<<<<<< HEAD
 
 class WithoutPLIC extends Config((site, here, up) => {
   case PLICKey => None
   case ExtPLICKey => None
 })
+=======
+>>>>>>> 9978cc6a6684ddea502baf16a458745c0bd12add
