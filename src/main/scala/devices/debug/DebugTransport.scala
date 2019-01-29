@@ -20,6 +20,7 @@ case class JtagDTMConfig (
   // the lines of p(JtagDTMKey).idcodeManufId.U(11.W).
   debugIdleCycles  : Int,
   irLength         : Int,
+  tdoOnNegEdge     : Boolean,
   registerAddrs    : dtmJTAGAddrs)
 
 case object JtagDTMKey extends Field[JtagDTMConfig](new JtagDTMKeyDefault())
@@ -30,6 +31,7 @@ class JtagDTMKeyDefault extends JtagDTMConfig(
   idcodeManufId = 0,
   debugIdleCycles = 5, // Reasonable guess for synchronization.
   irLength = 5,
+  tdoOnNegEdge = true,
   registerAddrs = new defaultAddrs()
 )
 
@@ -272,6 +274,7 @@ class DebugTransportModuleJTAG(debugAddrBits: Int, c: JtagDTMConfig)
 
 
   val tapIO = JtagTapGenerator(irLength = p(JtagDTMKey).irLength,
+    tdoOnNegEdge = p(JtagDTMKey).tdoOnNegEdge,
     instructions = Map(
       p(JtagDTMKey).registerAddrs.DMI_ACCESS -> dmiAccessChain,
       p(JtagDTMKey).registerAddrs.DTM_INFO   -> dtmInfoChain),

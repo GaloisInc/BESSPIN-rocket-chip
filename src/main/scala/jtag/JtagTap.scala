@@ -2,6 +2,8 @@
 
 package freechips.rocketchip.jtag
 
+import freechips.rocketchip.devices.debug.JtagDTMKey
+
 import scala.collection.SortedMap
 
 // !!! See Issue #1160.
@@ -66,18 +68,20 @@ class JtagControllerIO(irLength: Int) extends JtagBlockIO(irLength, false) {
   * Misc notes:
   * - Figure 6-3 and 6-4 provides examples with timing behavior
   */
-class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
+class JtagTapController(irLength: Int, tdoOnNegEdge: Boolean, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
   require(irLength >= 2)  // 7.1.1a
 
   val io = IO(new JtagControllerIO(irLength))
 
-  // Temporary change to check Xilinx BSCANE2 compatibility. Should add a parameter to selectively change registers
   val tdo = Wire(Bool())  // 4.4.1c TDI should appear here uninverted after shifting
   val tdo_driven = Wire(Bool())
-  io.jtag.TDO.data := tdo
-  io.jtag.TDO.driven := tdo_driven
-//  io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
-//  io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  if (tdoOnNegEdge) {
+    io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
+    io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  } else {
+    io.jtag.TDO.data := tdo
+    io.jtag.TDO.driven := tdo_driven
+  }
 
   //
   // JTAG state machine
@@ -182,7 +186,7 @@ object JtagTapGenerator {
     * TODO:
     * - support concatenated scan chains
     */
-  def apply(irLength: Int, instructions: Map[BigInt, Chain], icode: Option[BigInt] = None)(implicit p: Parameters): JtagBlockIO = {
+  def apply(irLength: Int, tdoOnNegEdge: Boolean, instructions: Map[BigInt, Chain], icode: Option[BigInt] = None)(implicit p: Parameters): JtagBlockIO = {
 
     val internalIo = Wire(new JtagBlockIO(irLength, icode.isDefined))
 
@@ -209,7 +213,7 @@ object JtagTapGenerator {
 
     require(!(allInstructions contains bypassIcode), "instructions may not contain BYPASS code")
 
-    val controllerInternal = Module(new JtagTapController(irLength, initialInstruction))
+    val controllerInternal = Module(new JtagTapController(irLength, tdoOnNegEdge, initialInstruction))
 
     val unusedChainOut = Wire(new ShifterIO)  // De-selected chain output
     unusedChainOut.shift := false.B
