@@ -14,6 +14,7 @@ import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util._
+import galois.devices.xilinxAddrs
 
 class BaseSubsystemConfig extends Config ((site, here, up) => {
   // Tile parameters
@@ -277,6 +278,16 @@ class WithEdgeDataBits(dataBits: Int) extends Config((site, here, up) => {
 class WithJtagDTM extends Config ((site, here, up) => {
   case ExportDebugDMI => false
   case ExportDebugJTAG => true
+})
+
+class WithXilinxJtag extends Config ((site, here, up) => {
+  case ExportDebugDMI => false
+  case ExportDebugJTAG => true
+  // Xilinx requires an IR length of 18 and special register addresses
+  case JtagDTMKey => new JtagDTMConfig(
+    idcodeVersion = 0, idcodePartNum = 0, idcodeManufId = 0, debugIdleCycles = 5,
+    irLength = 18, registerAddrs = new xilinxAddrs()
+  )
 })
 
 class WithDebugSBA extends Config ((site, here, up) => {
