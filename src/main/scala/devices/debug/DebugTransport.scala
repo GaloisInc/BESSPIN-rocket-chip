@@ -18,7 +18,9 @@ case class JtagDTMConfig (
   // mfr_id for this core.
   // If you wish to use this field in the config, you can obtain it along
   // the lines of p(JtagDTMKey).idcodeManufId.U(11.W).
-  debugIdleCycles  : Int)
+  debugIdleCycles  : Int,
+  irLength         : Int,
+  registerAddrs    : dtmJTAGAddrs)
 
 case object JtagDTMKey extends Field[JtagDTMConfig](new JtagDTMKeyDefault())
 
@@ -26,13 +28,22 @@ class JtagDTMKeyDefault extends JtagDTMConfig(
   idcodeVersion = 0,
   idcodePartNum = 0,
   idcodeManufId = 0,
-  debugIdleCycles = 5) // Reasonable guess for synchronization.
+  debugIdleCycles = 5, // Reasonable guess for synchronization.
+  irLength = 5,
+  registerAddrs = new defaultAddrs()
+)
 
-object dtmJTAGAddrs {
-  def IDCODE       = 0x002924
-  def DTM_INFO     = 0x022924
-  def DMI_ACCESS   = 0x003924
-}
+case class dtmJTAGAddrs (
+  IDCODE      : Int,
+  DTM_INFO    : Int,
+  DMI_ACCESS  : Int
+)
+
+class defaultAddrs extends dtmJTAGAddrs (
+  IDCODE       = 0x1,
+  DTM_INFO     = 0x10,
+  DMI_ACCESS   = 0x11
+)
 
 class DMIAccessUpdate(addrBits: Int) extends Bundle {
   val addr = UInt(width = addrBits)
@@ -259,12 +270,12 @@ class DebugTransportModuleJTAG(debugAddrBits: Int, c: JtagDTMConfig)
   idcode.partNumber := c.idcodePartNum.U
   idcode.mfrId      := io.jtag_mfr_id
 
-  // Xilinx requires an IR length of 18, because of all the other configuration functions etc.
-  val tapIO = JtagTapGenerator(irLength = 18,
+
+  val tapIO = JtagTapGenerator(irLength = p(JtagDTMKey).irLength,
     instructions = Map(
-      dtmJTAGAddrs.DMI_ACCESS -> dmiAccessChain,
-      dtmJTAGAddrs.DTM_INFO   -> dtmInfoChain),
-    icode = Some(dtmJTAGAddrs.IDCODE)
+      p(JtagDTMKey).registerAddrs.DMI_ACCESS -> dmiAccessChain,
+      p(JtagDTMKey).registerAddrs.DTM_INFO   -> dtmInfoChain),
+    icode = Some(p(JtagDTMKey).registerAddrs.IDCODE)
   )
 
   tapIO.idcode.get := idcode
