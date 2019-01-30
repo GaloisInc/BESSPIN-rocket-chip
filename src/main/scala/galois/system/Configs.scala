@@ -25,7 +25,7 @@ class P1Config extends Config(
   new BaseConfig
 )
 
-class P1TVConfig extends Confg(
+class P1TVConfig extends Config(
   new WithTandemVerification(true) ++
   new P1Config
 )
