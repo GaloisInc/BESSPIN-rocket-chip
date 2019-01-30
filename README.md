@@ -46,6 +46,7 @@ appropriate branch from the gfe repo.
 To build an FPGA-ready netlist directly, change the configuration name to "P#FPGACONFIG".
 
 Ex:
+
     $ cd vsim; make PROJECT=galois.system CONFIG=P1FPGAConfig verilog
 
 Current caveats:
