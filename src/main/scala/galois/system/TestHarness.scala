@@ -12,7 +12,7 @@ class TestHarness()(implicit p: Parameters) extends Module {
     val success = Bool(OUTPUT)
   }
 
-  val dut = Module(LazyModule(new P1System).module)
+  val dut = Module(LazyModule(new P2System).module)
   dut.reset := reset | dut.debug.ndreset
 
   dut.dontTouchPorts()
