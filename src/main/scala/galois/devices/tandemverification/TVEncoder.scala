@@ -9,7 +9,8 @@ package galois.devices.tandemverification
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.{Parameters}
+import freechips.rocketchip.config.Parameters
+import freechips.rocketchip.tile.XLen
 // util package is required to make toBool work properly. Do not remove!
 import freechips.rocketchip.util._
 
@@ -25,6 +26,8 @@ class TVEncoderIO()(implicit p: Parameters) extends Bundle {
 // Currently implements Version 2018-11-20 / b1d1aa953e29331f7b367493fe4a00526f524079
 class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extends Module() {
   val io = new TVEncoderIO()
+
+  val RV64 = p(XLen) == 64
 
   // Messages come in over a decoupled interface (data, req, ack). This register will store the message while processing
   val storedMsg = Reg(new TraceMessage)
@@ -66,10 +69,12 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     returnVec.vec(0) := TraceEnc.te_op_full_reg
     returnVec.vec(1) := addr(7, 0)
     returnVec.vec(2) := addr(15, 8)
-    for (i <- 0 to 3) {
-      returnVec.vec(i+3) := data(8*(i+1)-1, 8*i)
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i+3) := data(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i+3) := data(8*(i+1)-1, 8*i) }
     }
-    returnVec.count := 7.U
+    returnVec.count := (if (RV64) 11.U else 7.U)
     returnVec
   }
 
@@ -78,10 +83,12 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     val returnVec = Wire(new TraceVector)
     returnVec.vec(0) := TraceEnc.te_op_microarch_state
     returnVec.vec(1) := TraceEnc.te_op_microarch_state_eaddr
-    for (i <- 0 to 3) {
-      returnVec.vec(i+2) := addr(8*(i+1)-1, 8*i)
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i+2) := addr(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i+2) := addr(8*(i+1)-1, 8*i) }
     }
-    returnVec.count := 6.U
+    returnVec.count := (if (RV64) 10.U else 6.U)
     returnVec
   }
 
@@ -101,18 +108,22 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   // TODO: add RV64 support
   def encodeMlen(data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
-    for (i <- 0 to 3) {
-      returnVec.vec(i) := data(8*(i+1)-1, 8*i)
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i) := data(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i) := data(8*(i+1)-1, 8*i) }
     }
-    returnVec.count := 4.U
+    returnVec.count := (if (RV64) 8.U else 4.U)
     returnVec
   }
 
   // TODO: add RV64 support
   def encodeMdata(msize: UInt, data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
-    for (i <- 0 to 3) {
-      returnVec.vec(i) := data(8*(i+1)-1, 8*i)
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i) := data(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i) := data(8*(i+1)-1, 8*i) }
     }
     switch (msize) {
       is (TraceEnc.te_mem_req_size_8) {
@@ -143,9 +154,11 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   def encodeStore(msize: UInt, data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
     returnVec.vec(0) := TraceEnc.te_op_microarch_state
-    returnVec.vec(1) := msize
-    for (i <- 0 to 3) {
-      returnVec.vec(i+2) := data(8*(i+1)-1, 8*i)
+    returnVec.vec(1) := 4.U + msize // Shift msize up by 4 to match proper encoding
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i+2) := data(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i+2) := data(8*(i+1)-1, 8*i) }
     }
     switch (msize) {
       is (TraceEnc.te_mem_req_size_8) {
@@ -254,6 +267,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     fields(0).count := 1.U
     switch (storedMsg.op) {
       is (TraceOP.trace_reset) {
+        if(params.debug) printf("[TVE] Encoding reset\n")
         encVec.vec := fields(0).vec
         encVec.vec(1) := TraceEnc.te_op_hart_reset
         encVec.vec(2) := TraceEnc.te_op_end_group
@@ -261,6 +275,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_i_rd) {
+        if(params.debug) printf("[TVE] Encoding IRD | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
@@ -269,6 +284,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_i_load) {
+        if(params.debug) printf("[TVE] Encoding ILD | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
@@ -278,6 +294,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_store) {
+        if(params.debug) printf("[TVE] Encoding ISR | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeStore(extractMemSize(storedMsg.instr), storedMsg.word2)
@@ -287,6 +304,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_amo) {
+        if(params.debug) printf("[TVE] Encoding AMO | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
@@ -297,6 +315,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_csrrx) {
+        if(params.debug) printf("[TVE] Encoding CSR | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
@@ -310,6 +329,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_ret) {
+        if(params.debug) printf("[TVE] Encoding RET | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodePriv(storedMsg.rd)
@@ -319,6 +339,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_other) {
+        if(params.debug) printf("[TVE] Encoding OTR | pc = 0x%x\n", storedMsg.pc)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         encVec := fieldsToTraceVector(convertedFields, fields, 2)
@@ -326,6 +347,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_csr_write) {
+        if(params.debug) printf("[TVE] Encoding CSW | pc = 0x%x\n", storedMsg.pc)
         fields(1).vec(0) := TraceEnc.te_op_state_init
         fields(1).count  := 1.U
         fields(2) := encodeReg(encodeCSRReg(storedMsg.word3), storedMsg.word4)
@@ -334,6 +356,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_trap) {
+        if(params.debug) printf("[TVE] Encoding TRP | pc = 0x%x\n", storedMsg.pc)
         // Some setup work first
         TraceEnc.setCSRAddrs(csr_addr, storedMsg.rd)
         // Always send the instruction for now. Could optimize later
@@ -349,6 +372,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_intr) {
+        if(params.debug) printf("[TVE] Encoding ITR | pc = 0x%x\n", storedMsg.pc)
         // Some setup work first
         TraceEnc.setCSRAddrs(csr_addr, storedMsg.rd)
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
@@ -362,6 +386,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_gpr_write) {
+        if(params.debug) printf("[TVE] Encoding GPW | loc = 0x%x\n", storedMsg.rd)
         fields(1).vec(0) := TraceEnc.te_op_state_init
         fields(1).count  := 1.U
         fields(2) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
@@ -370,6 +395,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_mem_write) {
+        if(params.debug) printf("[TVE] Encoding MEM\n")
         fields(1).vec(0) := TraceEnc.te_op_state_init
         fields(1).count  := 1.U
         fields(2).vec(1) := TraceEnc.te_op_mem_req
