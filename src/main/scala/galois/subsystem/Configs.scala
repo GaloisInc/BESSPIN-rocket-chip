@@ -385,5 +385,7 @@ class WithScratchpadsOnly extends Config((site, here, up) => {
 
 // Adds Tandem Verification with default parameters
 class WithTandemVerification(dumpTrace: Boolean = false) extends Config((site, here, up) => {
-  case TandemV => Some(TandemVerificationParams(dumpTrace = dumpTrace))
+  case TandemV => Some(TandemVerificationParams(dumpTrace = dumpTrace, debug = true))
+  case RocketTilesKey => up(RocketTilesKey, site) map { r =>
+    r.copy(trace = true) }
 })
