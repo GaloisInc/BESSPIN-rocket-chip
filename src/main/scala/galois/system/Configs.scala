@@ -29,6 +29,7 @@ class P1Config extends Config(
 class BaseConfig extends Config(
   new WithGFEMemPort() ++
   new WithGFEMMIOPort() ++
+  new WithGFECLINT ++
   new WithNoSlavePort ++
   new WithTimebase(BigInt(1000000)) ++ // 1 MHz
   new BaseSubsystemConfig()
