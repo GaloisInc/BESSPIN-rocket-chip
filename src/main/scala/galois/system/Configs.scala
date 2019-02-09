@@ -31,7 +31,7 @@ class BaseConfig extends Config(
   new WithGFEMMIOPort() ++
   new WithGFECLINT ++
   new WithNoSlavePort ++
-  new WithTimebase(BigInt(1000000)) ++ // 1 MHz
+  new WithTimebase(BigInt(100000000)) ++ // 100 MHz - Sets RTC tick to match global clock rate
   new BaseSubsystemConfig()
 )
 
