@@ -16,12 +16,11 @@ class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
   new WithoutTLMonitors ++
-  new WithoutPLIC ++
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
   new WithNSmallCores(1) ++
   new WithEdgeDataBits(64) ++
-  new WithNExtTopInterrupts(1) ++
+  new WithNExtTopInterrupts(16) ++
   new WithDTS("galois,rocketchip-p1", Nil) ++
   new BaseConfig
 )
