@@ -12,7 +12,7 @@ import Chisel.ImplicitConversions._
 import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.util._
-import freechips.rocketchip.tile.XLen
+import freechips.rocketchip.tile.{CoreParams, HasCoreParameters, TileKey, XLen}
 
 class TileTapIO()(implicit p: Parameters) extends Bundle {
   val traceData = (new TracedInstruction).asInput
@@ -74,6 +74,12 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
 
   isCompressed := t.insn(1, 0).andR === 0.U(1.W)
 
+  // For FPU
+  val fLen = p(TileKey).core.fpu.map(_.fLen).getOrElse(0)
+  val fpu_load_wb = Wire(Bool())
+  val fpu_tag = Wire(UInt(5))
+  val fpu_data = Wire(UInt(width = fLen))
+
   when (t.interrupt) {
     if (params.debug) printf("[TV] [Tile] %d Interrupt occurred!\n", time)
   }
@@ -113,6 +119,10 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   val isNop = Wire(Bool())
   isNop := t.insn === 0x00000013
 
+  when (fpu_load_wb) {
+    if (params.debug) printf ("[TV] [Tile] [FP] [%d] Addr = 0x%x | Data = 0x%x!\n", time, fpu_tag, fpu_data)
+  }
+
   when (t.valid && !t.exception) {
     // Make sure we don't clear out a previously stored message if a nop is committed
     when (isMsgStored) {
@@ -126,6 +136,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     isMsgReady := false
     when (wfd) {
       if (params.debug) printf ("[TV] [Tile] C0: %d : %d 0x%x (0x%x) f%d p%d 0xXXXXXXXXXXXXXXXX\n", time, t.priv, t.iaddr, t.insn, rd, rd+UInt(32))
+      if (params.debug) printf ("[TV] [Tile] This is a floating point instruction!\n")
     }
       .elsewhen (wxd && rd =/= UInt(0) && has_data) {
         TVFunctions.generate_tm_i(io.traceMsg.bits, isLoad, t.iaddr, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)

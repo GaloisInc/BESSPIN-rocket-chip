@@ -836,7 +836,7 @@ class Rocket(implicit p: Parameters) extends CoreModule()(p)
 
   p(BundleMonitorKey).foreach { _ ("rocket_core_monitor", coreMonitorBundle) }
 
-  if (enableCommitLog) {
+  if (!enableCommitLog) {
     val t = csr.io.trace(0)
     val rd = wb_waddr
     val wfd = wb_ctrl.wfd

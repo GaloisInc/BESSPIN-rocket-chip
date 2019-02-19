@@ -20,7 +20,7 @@ import galois.subsystem.{GaloisSubsystem, GaloisSubsystemModuleImp}
 case class TandemVerificationParams(
   debug: Boolean = false,
   dumpTrace: Boolean = false,
-  simDelay: Int = 32
+  simDelay: Int = 1
 )
 
 case object TandemV extends Field[Option[TandemVerificationParams]](None)
