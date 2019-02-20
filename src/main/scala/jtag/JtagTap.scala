@@ -2,6 +2,8 @@
 
 package freechips.rocketchip.jtag
 
+import freechips.rocketchip.devices.debug.JtagDTMKey
+
 import scala.collection.SortedMap
 
 // !!! See Issue #1160.
@@ -9,7 +11,7 @@ import scala.collection.SortedMap
 import Chisel._
 import chisel3.core.{Input, Output}
 import chisel3.util._
-import chisel3.experimental._
+import chisel3.experimental.withReset
 
 import freechips.rocketchip.config.Parameters
 
@@ -60,69 +62,34 @@ class JtagControllerIO(irLength: Int) extends JtagBlockIO(irLength, false) {
   override def cloneType = new JtagControllerIO(irLength).asInstanceOf[this.type]
 }
 
-/* JTAG state machine Xilinx version */
-// BSCANE2: Boundary-Scan User Instruction
-//          Artix-7
-// Xilinx HDL Language Template, version 2015.4
-class BSCANE2(chain: Int) extends BlackBox(Map("DISABLE_JTAG" -> StringParam("FALSE"), "JTAG_CHAIN" -> IntParam(chain))) {
-  val io = IO(new Bundle {
-    val CAPTURE = Output(Bool())
-    val DRCK = Output(Bool())
-    val RESET = Output(Bool())
-    val RUNTEST = Output(Bool())
-    val SEL = Output(Bool())
-    val SHIFT = Output(Bool())
-    val TCK = Output(Clock())
-    val TDI = Output(Bool())
-    val TMS = Output(Bool())
-    val UPDATE = Output(Bool())
-    val TDO = Input(Bool())
-    })
-}
-
-class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
-  require(irLength == 6)  // For Xilinx Artix7 BSCAN
-   val io = IO(new JtagControllerIO(irLength))
-   val chain02 = Module(new BSCANE2(0x1));
-  val chain22 = Module(new BSCANE2(0x3));
-  val chain23 = Module(new BSCANE2(0x4));
-   chain02.io.TDO <> io.dataChainIn.data
-  chain22.io.TDO <> io.dataChainIn.data
-  chain23.io.TDO <> io.dataChainIn.data
-  io.dataChainOut.data := (chain02.io.SEL & chain02.io.TDI) | (chain22.io.SEL & chain22.io.TDI) | (chain23.io.SEL & chain23.io.TDI)
-  io.jtag.TDO.driven := true.B
-  io.output.instruction := (chain02.io.SEL * 9.asUInt(irLength.W)) +
-                           (chain22.io.SEL * 34.asUInt(irLength.W)) +
-                           (chain23.io.SEL * 35.asUInt(irLength.W))
-  io.output.reset := chain02.io.RESET | chain22.io.RESET | chain23.io.RESET
-  io.dataChainOut.shift := chain02.io.SHIFT | chain22.io.SHIFT | chain23.io.SHIFT
-  io.jtag.TDO.data := io.dataChainOut.data
-  io.dataChainOut.capture := chain02.io.CAPTURE | chain22.io.CAPTURE | chain23.io.CAPTURE
-  io.dataChainOut.update := chain02.io.UPDATE | chain22.io.UPDATE | chain23.io.UPDATE
-}
-
-
 /** JTAG TAP controller internal block, responsible for instruction decode and data register chain
   * control signal generation.
   *
   * Misc notes:
   * - Figure 6-3 and 6-4 provides examples with timing behavior
   */
-class JtagTapControllerASIC(irLength: Int, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
+class JtagTapController(irLength: Int, tdoOnNegEdge: Boolean, initialInstruction: BigInt)(implicit val p: Parameters) extends Module {
   require(irLength >= 2)  // 7.1.1a
 
   val io = IO(new JtagControllerIO(irLength))
 
   val tdo = Wire(Bool())  // 4.4.1c TDI should appear here uninverted after shifting
   val tdo_driven = Wire(Bool())
-  io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
-  io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  if (tdoOnNegEdge) {
+    io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
+    io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  } else {
+    io.jtag.TDO.data := tdo
+    io.jtag.TDO.driven := tdo_driven
+  }
 
   //
   // JTAG state machine
   //
 
   val currState = Wire(JtagState.State.chiselType)
+
+//  printf("[TAP] TMS = %x | TDI = %x | TDO = %x | state = 0x%x\n", io.jtag.TMS, io.jtag.TDI, io.jtag.TDO.data, currState)
 
   // At this point, the TRSTn should already have been
   // combined with any POR, and it should also be
@@ -219,7 +186,7 @@ object JtagTapGenerator {
     * TODO:
     * - support concatenated scan chains
     */
-  def apply(irLength: Int, instructions: Map[BigInt, Chain], icode: Option[BigInt] = None)(implicit p: Parameters): JtagBlockIO = {
+  def apply(irLength: Int, tdoOnNegEdge: Boolean, instructions: Map[BigInt, Chain], icode: Option[BigInt] = None)(implicit p: Parameters): JtagBlockIO = {
 
     val internalIo = Wire(new JtagBlockIO(irLength, icode.isDefined))
 
@@ -246,7 +213,7 @@ object JtagTapGenerator {
 
     require(!(allInstructions contains bypassIcode), "instructions may not contain BYPASS code")
 
-    val controllerInternal = Module(new JtagTapController(irLength, initialInstruction))
+    val controllerInternal = Module(new JtagTapController(irLength, tdoOnNegEdge, initialInstruction))
 
     val unusedChainOut = Wire(new ShifterIO)  // De-selected chain output
     unusedChainOut.shift := false.B

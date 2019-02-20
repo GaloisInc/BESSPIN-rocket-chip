@@ -30,24 +30,31 @@ which processor is generated:
 
 #### P1
 
-    $ cd vsim (or emulator)
-    $ make PROJECT=galois.system CONFIG=P1Config
+    $ git checkout ssith-p1
+    $ cd vsim [or emulator]
+    $ make PROJECT=galois.system CONFIG=P1Config [verilog or output/testname]
 
 #### P2
 
-    $ cd vsim (or emulator)
-    $ make PROJECT=galois.system CONFIG=P2Config
+    $ git checkout ssith-p2
+    $ cd vsim [or emulator]
+    $ make PROJECT=galois.system CONFIG=P2Config [verilog or output/testname]
 
-These are processor-only releases and will be repackaged into a final GFE
-system at a later time.
+These are processor-only releases. For integration into the larger GFE system, checkout the 
+appropriate branch from the gfe repo.
+
+To build an FPGA-ready netlist directly, change the configuration name to "P#FPGACONFIG".
+
+Ex:
+
+    $ cd vsim; make PROJECT=galois.system CONFIG=P1FPGAConfig verilog
 
 Current caveats:
-+ The boot ROM will be external
-    + The boot ROM lives on the GFE AXI fabric. Simulations can still be performed using the debug module
-+ The reset vector and memory map are subject to change
++ The boot ROM is external on the AXI bus. This does not affect simulation within the rocket-chip testing framework
 + Tandem verification (SVF) is not yet available
-+ The DTM may be replaced at the GFE system level with a custom implementation
-+ Currently 2 external interrupts. Will increase to 16 with a later GFE release
++ The FPGA configs include custom modifications to the JTAG state machine and DTM that may render them inoperable on non-Xilinx boards
+  + In this configuration, TCK/TDI/TDO should come from Xilinx BSCANE2 primitives (not instantiated here). Look at the xilinxjtag module in the gfe repo.
++ Currently 1 external interrupt without a PLIC. This will increase to 16 managed by the rocket PLIC with a later GFE release
 
 ## <a name="quick"></a> Quick Instructions
 

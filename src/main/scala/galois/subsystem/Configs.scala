@@ -14,6 +14,7 @@ import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util._
+import galois.devices.xilinxAddrs
 
 class BaseSubsystemConfig extends Config ((site, here, up) => {
   // Tile parameters
@@ -279,6 +280,16 @@ class WithJtagDTM extends Config ((site, here, up) => {
   case ExportDebugJTAG => true
 })
 
+class WithXilinxJtag extends Config ((site, here, up) => {
+  case ExportDebugDMI => false
+  case ExportDebugJTAG => true
+  // Xilinx requires an IR length of 18, special register addresses, and latching TDO on positive edge
+  case JtagDTMKey => new JtagDTMConfig(
+    idcodeVersion = 0, idcodePartNum = 0, idcodeManufId = 0, debugIdleCycles = 5,
+    irLength = 18, tdoOnNegEdge = false, registerAddrs = new xilinxAddrs()
+  )
+})
+
 class WithDebugSBA extends Config ((site, here, up) => {
   case DebugModuleParams => up(DebugModuleParams, site).copy(hasBusMaster = true)
 })
@@ -315,9 +326,17 @@ class WithTimebase(hertz: BigInt) extends Config((site, here, up) => {
 class WithDefaultMemPort extends Config((site, here, up) => {
   case ExtMem => Some(MemoryPortParams(MasterPortParams(
                       base = x"8000_0000",
-                      size = x"1000_0000",
+                      size = x"8000_0000",
                       beatBytes = site(MemoryBusKey).beatBytes,
                       idBits = 4), 1))
+})
+
+class WithGFEMemPort extends Config((site, here, up) => {
+  case ExtMem => Some(MemoryPortParams(MasterPortParams(
+    base = x"8000_0000",
+    size = x"8000_0000",
+    beatBytes = site(MemoryBusKey).beatBytes,
+    idBits = 4), 1))
 })
 
 class WithNoMemPort extends Config((site, here, up) => {
@@ -330,6 +349,18 @@ class WithDefaultMMIOPort extends Config((site, here, up) => {
                       size = x"2000_0000",
                       beatBytes = site(MemoryBusKey).beatBytes,
                       idBits = 4))
+})
+
+class WithGFEMMIOPort extends Config((site, here, up) => {
+  case ExtBus => Some(MasterPortParams(
+    base = x"2000_0000",
+    size = x"6000_0000",
+    beatBytes = site(MemoryBusKey).beatBytes,
+    idBits = 4))
+})
+
+class WithGFECLINT extends Config((site, here, up) => {
+  case CLINTKey => Some(CLINTParams(baseAddress = x"1000_0000"))
 })
 
 class WithNoMMIOPort extends Config((site, here, up) => {

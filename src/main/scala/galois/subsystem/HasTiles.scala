@@ -65,7 +65,7 @@ trait HasTiles extends freechips.rocketchip.subsystem.HasTiles { this: BaseSubsy
      //    From PLIC: "meip"
      tile.crossIntIn() :=
        plicOpt .map { _.intnode }
-         .getOrElse { meipNode.get }
+         .getOrElse { ibus.toPLIC }
 
      //    From PLIC: "seip" (only if vm/supervisor mode is enabled)
      if (tile.tileParams.core.useVM) {

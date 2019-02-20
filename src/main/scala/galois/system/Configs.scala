@@ -12,11 +12,9 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 
-class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
-
 class P2Config extends Config(
   new WithoutTLMonitors ++
-  new WithNExtTopInterrupts(2) ++
+  new WithNExtTopInterrupts(16) ++
   new WithL1ICacheSets(32) ++
   new WithL1DCacheSets(32) ++
   new WithNBigCores(1) ++
@@ -24,19 +22,38 @@ class P2Config extends Config(
   new BaseConfig
 )
 
+class P1Config extends Config(
+  new WithRV32 ++ 
+  new WithoutFPU ++
+  new WithoutTLMonitors ++
+  new WithL1ICacheSets(64) ++
+  new WithL1DCacheSets(64) ++
+  new WithNSmallCores(1) ++
+  new WithEdgeDataBits(64) ++
+  new WithNExtTopInterrupts(16) ++
+  new WithDTS("galois,rocketchip-p1", Nil) ++
+  new BaseConfig
+)
+
 class BaseConfig extends Config(
-  new WithDefaultMemPort() ++
-  new WithDefaultMMIOPort() ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
+  new WithGFECLINT ++
   new WithNoSlavePort ++
-  new WithTimebase(BigInt(1000000)) ++ // 1 MHz
+  new WithTimebase(BigInt(100000000)) ++ // 100 MHz - Sets RTC tick to match global clock rate
   new BaseSubsystemConfig()
 )
 
 class DefaultConfig extends Config(new P2Config)
 
 class P2FPGAConfig extends Config(
-  new WithJtagDTMSystem ++
+  new WithXilinxJtag ++
   new P2Config
+)
+
+class P1FPGAConfig extends Config(
+  new WithXilinxJtag ++
+  new P1Config
 )
 
 class DefaultFPGAConfig extends Config(new P2FPGAConfig)
@@ -49,4 +66,9 @@ class WithExtCLINT extends Config((site, here, up) => {
 class WithExtPLIC extends Config((site, here, up) => {
   case PLICKey => None
   case ExtPLICKey => Some(PLICParams())
+})
+
+class WithoutPLIC extends Config((site, here, up) => {
+  case PLICKey => None
+  case ExtPLICKey => None
 })
