@@ -13,12 +13,25 @@ import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 class P2Config extends Config(
   new WithoutTLMonitors ++
-  new WithNExtTopInterrupts(2) ++
+  new WithNExtTopInterrupts(16) ++
   new WithL1ICacheSets(32) ++
   new WithL1DCacheSets(32) ++
   new WithNBigCores(1) ++
   new WithEdgeDataBits(64) ++
   new WithDTS("galois,rocketchip-p2", Nil) ++
+  new BaseConfig
+)
+
+class P1Config extends Config(
+  new WithRV32 ++ 
+  new WithoutFPU ++
+  new WithoutTLMonitors ++
+  new WithL1ICacheSets(64) ++
+  new WithL1DCacheSets(64) ++
+  new WithNSmallCores(1) ++
+  new WithEdgeDataBits(64) ++
+  new WithNExtTopInterrupts(16) ++
+  new WithDTS("galois,rocketchip-p1", Nil) ++
   new BaseConfig
 )
 
@@ -30,8 +43,9 @@ class P2TVConfig extends Config(
 class BaseConfig extends Config(
   new WithGFEMemPort() ++
   new WithGFEMMIOPort() ++
+  new WithGFECLINT ++
   new WithNoSlavePort ++
-  new WithTimebase(BigInt(1000000)) ++ // 1 MHz
+  new WithTimebase(BigInt(100000000)) ++ // 100 MHz - Sets RTC tick to match global clock rate
   new BaseSubsystemConfig()
 )
 
@@ -40,6 +54,11 @@ class DefaultConfig extends Config(new P2Config)
 class P2FPGAConfig extends Config(
   new WithXilinxJtag ++
   new P2Config
+)
+
+class P1FPGAConfig extends Config(
+  new WithXilinxJtag ++
+  new P1Config
 )
 
 class DefaultFPGAConfig extends Config(new P2FPGAConfig)

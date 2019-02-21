@@ -360,6 +360,10 @@ class WithGFEMMIOPort extends Config((site, here, up) => {
     idBits = 4))
 })
 
+class WithGFECLINT extends Config((site, here, up) => {
+  case CLINTKey => Some(CLINTParams(baseAddress = x"1000_0000"))
+})
+
 class WithNoMMIOPort extends Config((site, here, up) => {
   case ExtBus => None
 })
