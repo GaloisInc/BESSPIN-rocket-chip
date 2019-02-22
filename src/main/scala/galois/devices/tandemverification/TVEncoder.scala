@@ -53,13 +53,13 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
 
   def encodeGPRReg(addr: UInt) : UInt = {
     val encodedGPR = Wire(UInt(16.W))
-    encodedGPR := 4096.U(16) + addr
+    encodedGPR := 4096.U(16.W) + addr
     encodedGPR
   } // 4096.U(16) + addr
 
   def encodeFPRReg(addr: UInt) : UInt = {
     val encodedFPR = Wire(UInt(16.W))
-    encodedFPR := 4128.U(16) + addr
+    encodedFPR := 4128.U(16.W) + addr
     encodedFPR
   } // 4128.U(16) + addr
 
@@ -275,7 +275,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_i_rd) {
-        if(params.debug) printf("[TVE] Encoding IRD | pc = 0x%x\n", storedMsg.pc)
+        if(params.debug) printf("[TVE] Encoding IRD | pc = 0x%x | rd = 0x%x\n", storedMsg.pc, encodeGPRReg(storedMsg.rd).asUInt())
         fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
