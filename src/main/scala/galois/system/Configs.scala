@@ -35,6 +35,11 @@ class P1Config extends Config(
   new BaseConfig
 )
 
+class P1TVConfig extends Config(
+  new WithTandemVerification(true) ++
+  new P1Config
+)
+
 class P2TVConfig extends Config(
   new WithTandemVerification(true) ++
   new P2Config
