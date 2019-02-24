@@ -261,7 +261,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   val csr_addr_tval   = Wire(UInt(width = 32))
 
   // Convert the storedMsg
-  when (storedMsgValid) {
+  when (storedMsgValid && storedMsg.pc >= 0x8000000.U) {
     outQueue.io.enq.valid := false
     fields(0).vec(0) := TraceEnc.te_op_begin_group
     fields(0).count := 1.U
