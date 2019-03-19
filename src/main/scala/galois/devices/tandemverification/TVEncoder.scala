@@ -81,8 +81,8 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   // TODO: add RV64 support
   def encodeEaddr(addr: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
-    returnVec.vec(0) := TraceEnc.te_op_microarch_state
-    returnVec.vec(1) := TraceEnc.te_op_microarch_state_eaddr
+    returnVec.vec(0) := TraceEnc.te_op_addl_state
+    returnVec.vec(1) := TraceEnc.te_op_addl_state_eaddr
     if (RV64) {
       for (i <- 0 to 7) { returnVec.vec(i+2) := addr(8*(i+1)-1, 8*i) }
     } else {
@@ -144,16 +144,29 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
 
   def encodePriv(priv: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
-    returnVec.vec(0) := TraceEnc.te_op_microarch_state
-    returnVec.vec(1) := TraceEnc.te_op_microarch_state_priv
+    returnVec.vec(0) := TraceEnc.te_op_addl_state
+    returnVec.vec(1) := TraceEnc.te_op_addl_state_priv
     returnVec.vec(2) := priv
     returnVec.count  := 3.U
     returnVec
   }
 
+  def encodePC(pc: UInt) : TraceVector = {
+    val returnVec = Wire(new TraceVector)
+    returnVec.vec(0) := TraceEnc.te_op_addl_state
+    returnVec.vec(1) := TraceEnc.te_op_addl_state_pc
+    if (RV64) {
+      for (i <- 0 to 7) { returnVec.vec(i+2) := pc(8*(i+1)-1, 8*i) }
+    } else {
+      for (i <- 0 to 3) { returnVec.vec(i+2) := pc(8*(i+1)-1, 8*i) }
+    }
+    returnVec.count := (if (RV64) 10.U else 6.U)
+    returnVec
+  }
+
   def encodeStore(msize: UInt, data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
-    returnVec.vec(0) := TraceEnc.te_op_microarch_state
+    returnVec.vec(0) := TraceEnc.te_op_addl_state
     returnVec.vec(1) := 4.U + msize // Shift msize up by 4 to match proper encoding
     if (RV64) {
       for (i <- 0 to 7) { returnVec.vec(i+2) := data(8*(i+1)-1, 8*i) }
@@ -276,7 +289,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_i_rd) {
         if(params.debug) printf("[TVE] Encoding IRD | pc = 0x%x | rd = 0x%x\n", storedMsg.pc, encodeGPRReg(storedMsg.rd).asUInt())
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
         encVec := fieldsToTraceVector(convertedFields, fields, 3)
@@ -285,7 +298,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_i_load) {
         if(params.debug) printf("[TVE] Encoding ILD | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
         fields(4) := encodeEaddr(storedMsg.word3)
@@ -295,7 +308,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_store) {
         if(params.debug) printf("[TVE] Encoding ISR | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeStore(extractMemSize(storedMsg.instr), storedMsg.word2)
         fields(4) := encodeEaddr(storedMsg.word3)
@@ -305,7 +318,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_amo) {
         if(params.debug) printf("[TVE] Encoding AMO | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
         fields(4) := encodeStore(extractMemSize(storedMsg.instr), storedMsg.word2)
@@ -316,7 +329,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_csrrx) {
         if(params.debug) printf("[TVE] Encoding CSR | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeReg(encodeGPRReg(storedMsg.rd), storedMsg.word1)
         when (storedMsg.word2 === 0.U) {
@@ -330,7 +343,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_ret) {
         if(params.debug) printf("[TVE] Encoding RET | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodePriv(storedMsg.rd)
         fields(4) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_mstatus), storedMsg.word1)
@@ -340,7 +353,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_other) {
         if(params.debug) printf("[TVE] Encoding OTR | pc = 0x%x\n", storedMsg.pc)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         encVec := fieldsToTraceVector(convertedFields, fields, 2)
         encVec.vec(encVec.count - 1) := TraceEnc.te_op_end_group
@@ -360,7 +373,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         // Some setup work first
         TraceEnc.setCSRAddrs(csr_addr, storedMsg.rd)
         // Always send the instruction for now. Could optimize later
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodePriv(storedMsg.rd)
         fields(4) := encodeReg(encodeCSRReg(csr_addr.status), storedMsg.word1)
@@ -375,7 +388,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         if(params.debug) printf("[TVE] Encoding ITR | pc = 0x%x\n", storedMsg.pc)
         // Some setup work first
         TraceEnc.setCSRAddrs(csr_addr, storedMsg.rd)
-        fields(1) := encodeReg(encodeCSRReg(TraceEnc.csr_addr_dpc), storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodePriv(storedMsg.rd)
         fields(3) := encodeReg(encodeCSRReg(csr_addr.status), storedMsg.word1)
         fields(4) := encodeReg(encodeCSRReg(csr_addr.cause),  storedMsg.word2)
