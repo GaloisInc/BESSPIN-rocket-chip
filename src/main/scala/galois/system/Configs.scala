@@ -61,6 +61,11 @@ class P2FPGAConfig extends Config(
   new P2Config
 )
 
+class P2TVFPGAConfig extends Config(
+  new WithXilinxJtag ++
+  new P2TVConfig
+)
+
 class P1FPGAConfig extends Config(
   new WithXilinxJtag ++
   new P1Config
