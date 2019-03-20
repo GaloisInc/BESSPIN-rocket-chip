@@ -256,7 +256,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   }
 
   // Stall when there is something in the output queue *or* we are about to put something in the queue
-  tv_stall := (outQueue.io.count =/= 0.U) | outQueue.io.enq.valid
+  tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
 
   // Debug
   when (tv_stall) {
