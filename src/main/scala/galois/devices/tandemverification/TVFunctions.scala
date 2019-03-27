@@ -105,14 +105,14 @@ object TVFunctions {
     if (params.debug) printf("MSGTRACKER: New Message\n")
   }
 
-  // TODO: Implement call
+  // TODO: Implement call if necessary
   def generate_tm_gprw(msg: TraceMessage, rd: UInt, rdvalue: UInt) = {
     msg.op := TraceOP.trace_gpr_write
     msg.rd := rd
     msg.word1 := rdvalue
   }
 
-  // TODO: Implement call
+  // TODO: Implement call if necessary
   def generate_tm_memw(msg: TraceMessage, memsize: UInt, mvalue: UInt, paddr: UInt) = {
     msg.op := TraceOP.trace_mem_write
     msg.word1 := memsize
@@ -120,7 +120,7 @@ object TVFunctions {
     msg.word3 := paddr
   }
 
-  // TODO: Implement call
+  // TODO: Implement call if necessary
   def generate_tm_intr(msg: TraceMessage, pc: UInt, priv: UInt, mstatus: UInt, mcause: UInt,
                        mepc: UInt, mtval: UInt) = {
     msg.op := TraceOP.trace_intr
@@ -132,7 +132,7 @@ object TVFunctions {
     msg.word4 := mtval
   }
 
-  // TODO: Check this works
+  // TODO: Check functionality
   def generate_tm_trap(msg: TraceMessage, pc: UInt, compressed: Bool, instruction: UInt, priv: UInt, mstatus: UInt,
                        mcause: UInt, mepc: UInt, mtval: UInt) = {
 

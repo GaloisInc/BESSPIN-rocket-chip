@@ -96,7 +96,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     val returnVec = Wire(new TraceVector)
     returnVec.count := Mux(isize === TraceInstrSize.isize_16bit, 3.U, 5.U)
     when (isize === TraceInstrSize.isize_16bit) {
-      if (params.debug) printf("[TVE] Encoding a compressed instruction!!\n")
+      if (params.debug) printf("[TVE] Encoding a compressed instruction\n")
     }
     returnVec.vec(0) := Mux(isize === TraceInstrSize.isize_16bit, TraceEnc.te_op_16b_instr, TraceEnc.te_op_32b_instr)
     for (i <- 0 to 3) {
@@ -256,12 +256,15 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   }
 
   // Stall when there is something in the output queue *or* we are about to put something in the queue
-  tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
+  // tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
+  tv_stall := false.B
 
   // Debug
   when (tv_stall) {
     if (params.debug) printf("[TV] CPU Stalled. inQueue = %d | outQueue = %d\n", inQueue.io.count, outQueue.io.count)
   }
+
+  printf("[TV] inQueue = %d | outQueue = %d\n", inQueue.io.count, outQueue.io.count)
 
   var endPosVec = Wire(Vec(5, UInt(7.W)))
   val fields = Wire(Vec(8, new TraceVector))

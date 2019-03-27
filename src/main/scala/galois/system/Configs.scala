@@ -46,9 +46,9 @@ class P2TVConfig extends Config(
 )
 
 class BaseConfig extends Config(
-  new WithGFEMemPort() ++
-  new WithGFEMMIOPort() ++
   new WithGFECLINT ++
+  new WithDefaultMemPort ++
+  new WithDefaultMMIOPort ++
   new WithNoSlavePort ++
   new WithTimebase(BigInt(100000000)) ++ // 100 MHz - Sets RTC tick to match global clock rate
   new BaseSubsystemConfig()
@@ -58,17 +58,30 @@ class DefaultConfig extends Config(new P2Config)
 
 class P2FPGAConfig extends Config(
   new WithXilinxJtag ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new P2Config
 )
 
 class P2TVFPGAConfig extends Config(
   new WithXilinxJtag ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new P2TVConfig
 )
 
 class P1FPGAConfig extends Config(
   new WithXilinxJtag ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new P1Config
+)
+
+class P1TVFPGAConfig extends Config(
+  new WithXilinxJtag ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
+  new P1TVConfig
 )
 
 class DefaultFPGAConfig extends Config(new P2FPGAConfig)

@@ -89,7 +89,7 @@ class TVConsumer(params: TandemVerificationParams) extends Module with DontTouch
   }
 
   when (io.traceout.fire()) {
-    if (params.debug) printf("[DUT] Vector Accepted!\n")
+    if (params.debug) printf("[DUT] Vector Accepted\n")
     // Format is the number of valid bytes followed by the byte array in hex format. This array will be packed right to left
     // so the post-processing software will likely have to byte-reverse the string
     if (params.dumpTrace) printf("[DUT] [HEX] [%d] %x\n", io.traceout.data.bits.count, io.traceout.data.bits.vec.asUInt())
