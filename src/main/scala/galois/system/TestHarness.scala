@@ -13,7 +13,7 @@ class TestHarness()(implicit p: Parameters) extends Module with DontTouch {
     val success = Bool(OUTPUT)
   }
 
-  val dut = Module(LazyModule(new P2System).module)
+  val dut = Module(LazyModule(new GaloisSystem).module)
   dut.reset := reset | dut.debug.ndreset
 
 

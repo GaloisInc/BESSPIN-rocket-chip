@@ -14,14 +14,14 @@ import freechips.rocketchip.devices.tilelink._
 import freechips.rocketchip.util.DontTouch
 import galois.devices.ExtPLICKey
 
-/** P1 top with periphery devices and ports, and a Rocket subsystem */
-class P2System(implicit p: Parameters) extends GaloisSubsystem
+/** Top with periphery devices and ports, and a Rocket subsystem */
+class GaloisSystem(implicit p: Parameters) extends GaloisSubsystem
   with HasAsyncExtInterrupts
   with CanHaveTandemVerification
     with CanHaveMasterAXI4MemPort
     with CanHaveMasterAXI4MMIOPort
 {
-  override lazy val module = new P2SystemModuleImp(this)
+  override lazy val module = new GaloisSystemModuleImp(this)
 
   // The sbus masters the cbus; here we convert TL-UH -> TL-UL
   sbus.crossToBus(cbus, NoCrossing)
@@ -46,7 +46,7 @@ class P2System(implicit p: Parameters) extends GaloisSubsystem
   }
 }
 
-class P2SystemModuleImp[+L <: P2System](_outer: L) extends GaloisSubsystemModuleImp(_outer)
+class GaloisSystemModuleImp[+L <: GaloisSystem](_outer: L) extends GaloisSubsystemModuleImp(_outer)
     with HasRTCModuleImp
     with HasGaloisGFEResetVectorImp
     with CanHaveGFEMasterAXI4MemPortModuleImp
