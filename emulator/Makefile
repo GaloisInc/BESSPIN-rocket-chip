@@ -39,6 +39,9 @@ $(output_dir)/%.run: $(output_dir)/% $(emu)
 $(output_dir)/%.out: $(output_dir)/% $(emu)
 	./$(emu) +max-cycles=$(timeout_cycles) +verbose $< $(disasm) $@ && [ $$PIPESTATUS -eq 0 ]
 
+$(output_dir)/%.trace: $(output_dir)/%.out
+	python ../scripts/process_trace.py $< $@
+
 $(output_dir)/%.vcd: $(output_dir)/% $(emu_debug)
 	./$(emu_debug) +max-cycles=$(timeout_cycles) +verbose -v$@ $< $(disasm) $(patsubst %.vcd,%.out,$@) && [ $$PIPESTATUS -eq 0 ]
 
