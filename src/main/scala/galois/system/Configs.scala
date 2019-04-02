@@ -12,6 +12,8 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.subsystem.NExtTopInterrupts
 
 class P2Config extends Config(
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new WithoutTLMonitors ++
   new WithNExtTopInterrupts(16) ++
   new WithL1ICacheSets(32) ++
@@ -25,6 +27,8 @@ class P2Config extends Config(
 class P1Config extends Config(
   new WithRV32 ++ 
   new WithoutFPU ++
+  new WithGFEMemPort() ++
+  new WithGFEMMIOPort() ++
   new WithoutTLMonitors ++
   new WithL1ICacheSets(64) ++
   new WithL1DCacheSets(64) ++
@@ -58,8 +62,6 @@ class DefaultConfig extends Config(new P2Config)
 
 class P2FPGAConfig extends Config(
   new WithXilinxJtag ++
-  new WithGFEMemPort() ++
-  new WithGFEMMIOPort() ++
   new P2Config
 )
 
@@ -79,8 +81,6 @@ class P1FPGAConfig extends Config(
 
 class P1TVFPGAConfig extends Config(
   new WithXilinxJtag ++
-  new WithGFEMemPort() ++
-  new WithGFEMMIOPort() ++
   new P1TVConfig
 )
 
