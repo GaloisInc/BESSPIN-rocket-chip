@@ -115,6 +115,9 @@ class GaloisSubsystemModuleImp[+L <: GaloisSubsystem](_outer: L) extends BaseSub
     BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.reg_mstatus.prv, Seq(traceConverter.get.epriv))
     BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.trap_mstatus_uint, Seq(traceConverter.get.trap_mstatus))
     BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.trapToDebug, Seq(traceConverter.get.trapToDebug))
+    BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.csr_wen, Seq(traceConverter.get.csr_wen))
+    BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.csr_trace_waddr, Seq(traceConverter.get.csr_trace_waddr))
+    BoringUtils.bore(outer.tiles(0).module.core.rocketImpl.csr.csr_trace_wdata, Seq(traceConverter.get.csr_trace_wdata))
     BoringUtils.bore(tvencoder.get.tv_stall, Seq(outer.tiles(0).module.core.rocketImpl.tv_block))
 
     // FPU

@@ -689,9 +689,21 @@ class CSRFile(
 //    printf("mip = 0x%x\n", mip.asUInt())
 //  }
 
+  /*
+  Need to grab csr_wen and perhaps recreate the code inside this block, picking out the final values for mstatus, misa, and mip.
+  Need to figure out if csr_wen is ever 1 when NOT retiring an instruction, and if so, do we need to produce a trace message when
+  that happens.
+   */
+
   val csr_wen = io.rw.cmd.isOneOf(CSR.S, CSR.C, CSR.W)
+  val csr_trace_waddr = Reg(UInt(width = CSR.ADDRSZ))
+  val csr_trace_wdata = Wire(UInt(width = xLen))
+  val decoded_trace_addr = read_mapping map { case (k, v) => k -> (csr_trace_waddr === k) }
+  csr_trace_wdata := Mux1H(for ((k, v) <- read_mapping) yield decoded_trace_addr(k) -> v)
+
   io.csrw_counter := Mux(coreParams.haveBasicCounters && csr_wen && (io.rw.addr.inRange(CSRs.mcycle, CSRs.mcycle + CSR.nCtr) || io.rw.addr.inRange(CSRs.mcycleh, CSRs.mcycleh + CSR.nCtr)), UIntToOH(io.rw.addr(log2Ceil(CSR.nCtr+nPerfCounters)-1, 0)), 0.U)
   when (csr_wen) {
+    csr_trace_waddr := io.rw.addr
     when (decoded_addr(CSRs.mstatus)) {
       val new_mstatus = new MStatus().fromBits(wdata)
       reg_mstatus.mie := new_mstatus.mie

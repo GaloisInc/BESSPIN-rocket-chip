@@ -31,6 +31,7 @@ object TraceOP {
   def trace_ret = UInt(13, SZ)
   def trace_csrrx = UInt(14, SZ)
   def trace_intr = UInt(15, SZ)
+  def trace_csr_write_alt = UInt(16, SZ)
 }
 
 object TraceInstrSize {

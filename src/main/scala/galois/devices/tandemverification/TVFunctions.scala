@@ -14,7 +14,11 @@ import Chisel._
 
 object TVFunctions {
 
-  def generate_tm_csrw(msg: TraceMessage, csraddr: UInt, csrval: UInt)(implicit params: TandemVerificationParams) = {
+  def generate_tm_csrw(msg: TraceMessage, pc: UInt, compressed: Bool, instruction: UInt, csraddr: UInt, csrval: UInt)(implicit params: TandemVerificationParams) = {
+    msg.op := TraceOP.trace_csr_write
+    msg.pc := pc
+    msg.instr_size := Mux(compressed, TraceInstrSize.isize_16bit, TraceInstrSize.isize_32bit)
+    msg.instr := instruction
     msg.op := TraceOP.trace_csr_write
     msg.word3 := csraddr
     msg.word4 := csrval

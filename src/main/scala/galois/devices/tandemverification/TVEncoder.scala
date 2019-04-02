@@ -256,8 +256,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   }
 
   // Stall when there is something in the output queue *or* we are about to put something in the queue
-  // tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
-  tv_stall := false.B
+   tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
 
   // Debug
   when (tv_stall) {
@@ -364,6 +363,15 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       is (TraceOP.trace_csr_write) {
         if(params.debug) printf("[TVE] Encoding CSW | pc = 0x%x\n", storedMsg.pc)
+        fields(1) := encodePC(storedMsg.pc)
+        fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
+        fields(3) := encodeReg(encodeCSRReg(storedMsg.word3), storedMsg.word4)
+        encVec := fieldsToTraceVector(convertedFields, fields, 3)
+        encVec.vec(encVec.count - 1) := TraceEnc.te_op_end_group
+        outQueue.io.enq.valid := true
+      }
+      is (TraceOP.trace_csr_write_alt) {
+        if(params.debug) printf("[TVE] Encoding CSW-Alt | pc = 0x%x\n", storedMsg.pc)
         fields(1).vec(0) := TraceEnc.te_op_state_init
         fields(1).count  := 1.U
         fields(2) := encodeReg(encodeCSRReg(storedMsg.word3), storedMsg.word4)
