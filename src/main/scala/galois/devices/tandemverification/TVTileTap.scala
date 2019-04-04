@@ -99,7 +99,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
    */
 
   val storedMsg   = Reg(new TraceMessage)
-  val isMsgStored = Reg(Bool())
+  val isMsgStored = RegInit(false.B)
   val inReset     = Reg(init = Bool(true))
 
   val isMsgReady     = Wire(Bool())
@@ -125,6 +125,8 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
 
   storedMsgIsCSR := storedMsg.op === TraceOP.trace_csr_write
 
+  printf("[TV] [Tile] C0: %d | npc = 0x%x | mem_npc = 0x%x\n", time, npc, mem_npc)
+
   when(fpu_load_wb) {
     if (params.debug) printf("[TV] [Tile] [FP] [%d] Addr = 0x%x | Data = 0x%x!\n", time, fpu_tag, fpu_data)
   }
@@ -145,20 +147,21 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       if (params.debug) printf("[TV] [Tile] Floating point instruction\n")
     }
       .elsewhen(wxd && rd =/= UInt(0) && has_data) {
-        TVFunctions.generate_tm_i(io.traceMsg.bits, isLoad, t.iaddr, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
+        TVFunctions.generate_tm_i(io.traceMsg.bits, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
         isMsgReady := true
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
         assert(branch === false)
         when(isCSRRX) {
           if (params.debug) printf("[TV] [Tile] C0: %d : CSRRX Instruction: CSR Addr = 0x%x | CSR Data = 0x%x\n", time, csr_addr, csr_wdata)
-          TVFunctions.generate_tm_csrrx(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, rd, rf_wdata, Bool(true), csr_addr, csr_wdata)
-        }
-        when(isAMOInsn) {
-          TVFunctions.generate_tm_amo(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, rd, rf_wdata, stored_data, stored_addr)
+          TVFunctions.generate_tm_csrrx(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata, Bool(true), csr_addr, csr_wdata)
+        }.elsewhen(isAMOInsn) {
+          TVFunctions.generate_tm_amo(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata, stored_data, stored_addr)
+        }.otherwise {
+          TVFunctions.generate_tm_i_rd(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata)
         }
       }
       .elsewhen(wxd && rd =/= UInt(0) && !has_data) {
-        TVFunctions.generate_tm_i(storedMsg, isLoad, t.iaddr, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
+        TVFunctions.generate_tm_i(storedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
         assert(branch === false)
         isMsgStored := 1
         if (params.debug) printf("[TV] [Tile] C0: %d : Stored Message for rd = %d\n", time, rd)
@@ -168,37 +171,37 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x)\n", time, t.priv, t.iaddr, t.insn)
         when(branch) {
           if (params.debug) printf("[TV] [Tile] C0: %d : Branch npc = 0x%x\n", time, npc)
-          TVFunctions.generate_tm_other(io.traceMsg.bits, t.iaddr, isCompressed, t.insn)(params)
+          TVFunctions.generate_tm_other(io.traceMsg.bits, npc, isCompressed, t.insn)(params)
           isMsgReady := true
-        }
-        when(csr_wen) {
+        }.elsewhen(csr_wen) {
           if (params.debug) printf("[TV] [Tile] C0: %d : CSR Write Enabled\n", time)
-          TVFunctions.generate_tm_csrw(storedMsg, t.iaddr, isCompressed, t.insn, 0.U, 0.U)(params)
+          TVFunctions.generate_tm_csrw(storedMsg, npc, isCompressed, t.insn, 0.U, 0.U)(params)
           isMsgStored := true
           isMsgReady := false
-        }
-        when(csr_insn_ret) {
+        }.elsewhen(csr_insn_ret) {
           if (params.debug) printf("[TV] [Tile] C0: %d : RET priv = %d | mstatus = 0x%x\n", time, t.priv, csr_mstatus)
-          TVFunctions.generate_tm_ret(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, t.priv, csr_mstatus)(params)
+          TVFunctions.generate_tm_ret(io.traceMsg.bits, npc, isCompressed, t.insn, t.priv, csr_mstatus)(params)
           isMsgReady := true
-        }
-        when(isLoad) {
+        }.elsewhen(isLoad) {
           if (params.debug) printf("[TV] [Tile] Load Instruction\n")
-        }
-        when(isStore) {
+        }.elsewhen(isStore) {
           if (params.debug) printf("[TV] [Tile] Store Instruction: 0x%x @ 0x%x\n", stored_data, stored_addr)
-          TVFunctions.generate_tm_store(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, stored_data, stored_addr)(params)
+          TVFunctions.generate_tm_store(io.traceMsg.bits, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
+          isMsgReady := true
+        }.otherwise {
+          TVFunctions.generate_tm_other(io.traceMsg.bits, npc, isCompressed, t.insn)(params)
           isMsgReady := true
         }
       }
   }.elsewhen(exception && !trapToDebug) {
     if (params.debug) printf("[TV] [Tile] Exception\n")
-    TVFunctions.generate_tm_trap(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, epriv, trap_mstatus, cause, epc, tval)
+    // Use mem_npc, which is an earlier PC. This should be the PC that will be executed after the exception
+    TVFunctions.generate_tm_trap(io.traceMsg.bits, mem_npc, isCompressed, t.insn, epriv, csr_mstatus, cause, epc, tval)
     isMsgReady := true
   }.elsewhen(t.interrupt) {
     if (params.debug) printf("[TV] [Tile] Interrupt\n")
-    TVFunctions.generate_tm_intr(io.traceMsg.bits, t.iaddr, epriv, trap_mstatus, cause, epc, tval)
-    isMsgReady := true
+//    TVFunctions.generate_tm_intr(io.traceMsg.bits, npc, epriv, csr_mstatus, cause, epc, tval)
+    isMsgReady := false
   }.otherwise {
     isMsgReady := false
   }
@@ -217,6 +220,8 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     io.traceMsg.bits.word4 := csr_trace_wdata
     if (params.debug) printf("[TV] [Tile] C0: %d : Updated 0x%x in CSR 0x%x\n", time, csr_trace_wdata, csr_trace_waddr)
     storedMsgReady := true
+  }.elsewhen(isMsgStored) {
+    storedMsgReady := false
   }.otherwise {
     storedMsgReady := false
   }
@@ -229,7 +234,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     when (isLoad) { if (params.debug) printf("[TV] [Tile] Load Instruction Type 2\n") }
     when (isStore) {
       if (params.debug) printf("[TV] [Tile] Store Instruction Type 2: 0x%x @ 0x%x\n", stored_data, stored_addr)
-      TVFunctions.generate_tm_store(io.traceMsg.bits, t.iaddr, isCompressed, t.insn, stored_data, stored_addr)(params)
+      TVFunctions.generate_tm_store(io.traceMsg.bits, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
       isStoreReady := true
     }
   }.otherwise {
