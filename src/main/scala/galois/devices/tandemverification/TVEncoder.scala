@@ -78,7 +78,6 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     returnVec
   }
 
-  // TODO: add RV64 support
   def encodeEaddr(addr: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
     returnVec.vec(0) := TraceEnc.te_op_addl_state
@@ -105,7 +104,6 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     returnVec
   }
 
-  // TODO: add RV64 support
   def encodeMlen(data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
     if (RV64) {
@@ -117,7 +115,6 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     returnVec
   }
 
-  // TODO: add RV64 support
   def encodeMdata(msize: UInt, data: UInt) : TraceVector = {
     val returnVec = Wire(new TraceVector)
     if (RV64) {

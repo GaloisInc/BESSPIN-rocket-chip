@@ -98,21 +98,15 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     until the writeback value is available.
    */
 
-  val storedMsg   = Reg(new TraceMessage)
-  val isMsgStored = RegInit(false.B)
+  // Want valid to be registered but 'done'/consumed ack to be combinational, so a custom interface is used
+  val capturedMsg = Reg(new TraceMessage)
+  val capturedMsg_valid = RegInit(false.B)
+  val capturedMsg_done  = Wire(Bool())
   val inReset     = Reg(init = Bool(true))
 
-  val isMsgReady     = Wire(Bool())
-  val storedMsgIsCSR = Wire(Bool())
-  val storedMsgReady = Wire(Bool())
-  val isStoreReady   = Wire(Bool())
-
-  io.traceMsg.valid := isMsgReady || storedMsgReady || isStoreReady || inReset // mip_update
-
-  when(inReset) {
-    inReset := false
-    TVFunctions.generate_tm_reset(io.traceMsg.bits)(params)
-  }
+  val msgIsCSR = Wire(Bool())
+  val capturedMsgIsCSR = Wire(Bool())
+  val capturedMsgNeedsData = RegInit(false.B)
 
   //  when (mip_update) {
   //    if (params.debug) printf("[TV] [Tile] %d MIP has changed! mip = 0x%x\n", time, mipval)
@@ -123,47 +117,65 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   val isNop = Wire(Bool())
   isNop := t.insn === 0x00000013
 
-  storedMsgIsCSR := storedMsg.op === TraceOP.trace_csr_write
+  capturedMsgIsCSR := capturedMsg.op === TraceOP.trace_csr_write
 
-  printf("[TV] [Tile] C0: %d | npc = 0x%x | mem_npc = 0x%x\n", time, npc, mem_npc)
+//  printf("[TV] [Tile] C0: %d | npc = 0x%x | mem_npc = 0x%x\n", time, npc, mem_npc)
 
   when(fpu_load_wb) {
     if (params.debug) printf("[TV] [Tile] [FP] [%d] Addr = 0x%x | Data = 0x%x!\n", time, fpu_tag, fpu_data)
   }
 
-  when(t.valid && !t.exception) {
+  // Need to reconfigure how this works. It will be separated into two stages, capture and post-process
+  // In most cases, the post-process stage will do nothing
+  // For:
+  // -- CSR instructions it will fill in the final value of the CSR data, which is available only 1 cycle after the
+  // instruction is committed
+  // -- Speculatively committed Loads/Stores it will fill in the final data value once it is available approx. 4 cycles
+  // later.
+  // The first stage must check if a valid instruction is waiting, and properly detect issues:
+  // -- if waiting and isCSR, it is fine to write the next committed instruction (CSR data is always available next cycle)
+  // -- if waiting and not isCSR and new instruction is not NOP, raise an error.
+
+  when(inReset) {
+    inReset := false
+    TVFunctions.generate_tm_reset(capturedMsg)(params)
+    capturedMsg_valid := true.B
+  }.elsewhen(t.valid && !t.exception) {
     // Make sure we don't clear out a previously stored message if a nop is committed
-    when(isMsgStored) {
+    when(capturedMsg_valid && !capturedMsgIsCSR) {
       when(isNop == false) {
         if (params.debug) printf("[TV] [Tile] [WARN] New instruction committed before previously stored instruction sent to TraceEncoder. Check instruction stream!\n")
       }
-    }.otherwise {
-      isMsgStored := 0
     }
 
-    isMsgReady := false
+    capturedMsg_valid := false
+    capturedMsgNeedsData := false.B
+
     when(wfd) {
       if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) f%d p%d 0xXXXXXXXXXXXXXXXX\n", time, t.priv, t.iaddr, t.insn, rd, rd + UInt(32))
       if (params.debug) printf("[TV] [Tile] Floating point instruction\n")
     }
       .elsewhen(wxd && rd =/= UInt(0) && has_data) {
-        TVFunctions.generate_tm_i(io.traceMsg.bits, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
-        isMsgReady := true
-        if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
         assert(branch === false)
+
+        if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
+
         when(isCSRRX) {
           if (params.debug) printf("[TV] [Tile] C0: %d : CSRRX Instruction: CSR Addr = 0x%x | CSR Data = 0x%x\n", time, csr_addr, csr_wdata)
-          TVFunctions.generate_tm_csrrx(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata, Bool(true), csr_addr, csr_wdata)
+          TVFunctions.generate_tm_csrrx(capturedMsg, npc, isCompressed, t.insn, rd, rf_wdata, Bool(true), csr_addr, csr_wdata)
         }.elsewhen(isAMOInsn) {
-          TVFunctions.generate_tm_amo(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata, stored_data, stored_addr)
+          TVFunctions.generate_tm_amo(capturedMsg, npc, isCompressed, t.insn, rd, rf_wdata, stored_data, stored_addr)
         }.otherwise {
-          TVFunctions.generate_tm_i_rd(io.traceMsg.bits, npc, isCompressed, t.insn, rd, rf_wdata)
+          TVFunctions.generate_tm_i(capturedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
         }
+        capturedMsg_valid := true.B
+        capturedMsgNeedsData := false.B
       }
       .elsewhen(wxd && rd =/= UInt(0) && !has_data) {
-        TVFunctions.generate_tm_i(storedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
+        TVFunctions.generate_tm_i(capturedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
         assert(branch === false)
-        isMsgStored := 1
+        capturedMsg_valid := true.B
+        capturedMsgNeedsData := true.B
         if (params.debug) printf("[TV] [Tile] C0: %d : Stored Message for rd = %d\n", time, rd)
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d p%d 0xXXXXXXXXXXXXXXXX addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rd, stored_addr)
       }
@@ -171,74 +183,75 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x)\n", time, t.priv, t.iaddr, t.insn)
         when(branch) {
           if (params.debug) printf("[TV] [Tile] C0: %d : Branch npc = 0x%x\n", time, npc)
-          TVFunctions.generate_tm_other(io.traceMsg.bits, npc, isCompressed, t.insn)(params)
-          isMsgReady := true
+          TVFunctions.generate_tm_other(capturedMsg, npc, isCompressed, t.insn)(params)
         }.elsewhen(csr_wen) {
           if (params.debug) printf("[TV] [Tile] C0: %d : CSR Write Enabled\n", time)
-          TVFunctions.generate_tm_csrw(storedMsg, npc, isCompressed, t.insn, 0.U, 0.U)(params)
-          isMsgStored := true
-          isMsgReady := false
+          TVFunctions.generate_tm_csrw(capturedMsg, npc, isCompressed, t.insn, 0.U, 0.U)(params)
         }.elsewhen(csr_insn_ret) {
           if (params.debug) printf("[TV] [Tile] C0: %d : RET priv = %d | mstatus = 0x%x\n", time, t.priv, csr_mstatus)
-          TVFunctions.generate_tm_ret(io.traceMsg.bits, npc, isCompressed, t.insn, t.priv, csr_mstatus)(params)
-          isMsgReady := true
+          TVFunctions.generate_tm_ret(capturedMsg, npc, isCompressed, t.insn, t.priv, csr_mstatus)(params)
         }.elsewhen(isLoad) {
-          if (params.debug) printf("[TV] [Tile] Load Instruction\n")
+          if (params.debug) printf("[TV] [Tile] Unimplemented Load Instruction\n")
         }.elsewhen(isStore) {
           if (params.debug) printf("[TV] [Tile] Store Instruction: 0x%x @ 0x%x\n", stored_data, stored_addr)
-          TVFunctions.generate_tm_store(io.traceMsg.bits, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
-          isMsgReady := true
+          TVFunctions.generate_tm_store(capturedMsg, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
         }.otherwise {
-          TVFunctions.generate_tm_other(io.traceMsg.bits, npc, isCompressed, t.insn)(params)
-          isMsgReady := true
+          TVFunctions.generate_tm_other(capturedMsg, npc, isCompressed, t.insn)(params)
         }
+        capturedMsg_valid := true.B
+        capturedMsgNeedsData := false.B
       }
   }.elsewhen(exception && !trapToDebug) {
-    if (params.debug) printf("[TV] [Tile] Exception\n")
+    if (params.debug) printf("[TV] [Tile] Exception | pc = 0x%x\n", mem_npc)
     // Use mem_npc, which is an earlier PC. This should be the PC that will be executed after the exception
-    TVFunctions.generate_tm_trap(io.traceMsg.bits, mem_npc, isCompressed, t.insn, epriv, csr_mstatus, cause, epc, tval)
-    isMsgReady := true
+    TVFunctions.generate_tm_trap(capturedMsg, mem_npc, isCompressed, t.insn, epriv, csr_mstatus, cause, epc, tval)
+    capturedMsg_valid := true.B
+    capturedMsgNeedsData := false.B
   }.elsewhen(t.interrupt) {
     if (params.debug) printf("[TV] [Tile] Interrupt\n")
-//    TVFunctions.generate_tm_intr(io.traceMsg.bits, npc, epriv, csr_mstatus, cause, epc, tval)
-    isMsgReady := false
-  }.otherwise {
-    isMsgReady := false
-  }
-
-  when(isMsgStored && rf_wen && rf_waddr === storedMsg.rd && !storedMsgIsCSR) {
-    isMsgStored := 0
-    io.traceMsg.bits := storedMsg
-    io.traceMsg.bits.word1 := rf_wdata
-    assert(branch === false)
-    if (params.debug) printf("[TV] [Tile] C0: %d : Stored 0x%x into reg %d from 0x%x\n", time, rf_wdata, storedMsg.rd, stored_addr)
-    storedMsgReady := true
-  }.elsewhen(isMsgStored && storedMsgIsCSR) {
-    isMsgStored := 0
-    io.traceMsg.bits := storedMsg
-    io.traceMsg.bits.word3 := csr_trace_waddr
-    io.traceMsg.bits.word4 := csr_trace_wdata
-    if (params.debug) printf("[TV] [Tile] C0: %d : Updated 0x%x in CSR 0x%x\n", time, csr_trace_wdata, csr_trace_waddr)
-    storedMsgReady := true
-  }.elsewhen(isMsgStored) {
-    storedMsgReady := false
-  }.otherwise {
-    storedMsgReady := false
-  }
-
-  when (ll_wen && rf_waddr =/= UInt(0)) {
+    //    TVFunctions.generate_tm_intr(io.traceMsg.bits, npc, epriv, csr_mstatus, cause, epc, tval)
+    capturedMsg_valid := false.B
+    capturedMsgNeedsData := false.B
+  }.elsewhen (ll_wen && rf_waddr =/= UInt(0)) {
     if (params.debug) printf ("[TV] [Tile] C0: %d : x%d p%d 0x%x\n", time, rf_waddr, rf_waddr, rf_wdata)
-    //    printf ("rf_wen = %d | ll_wen = %d | rf_waddr = %d | rd = %d | isMsgStored = %d | storedMsg.rd = %d\n", rf_wen, ll_wen, rf_waddr, rd, isMsgStored, storedMsg.rd)
-    isStoreReady := false
-    assert(branch === false)
     when (isLoad) { if (params.debug) printf("[TV] [Tile] Load Instruction Type 2\n") }
     when (isStore) {
       if (params.debug) printf("[TV] [Tile] Store Instruction Type 2: 0x%x @ 0x%x\n", stored_data, stored_addr)
-      TVFunctions.generate_tm_store(io.traceMsg.bits, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
-      isStoreReady := true
+      TVFunctions.generate_tm_store(capturedMsg, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
+      capturedMsg_valid := true.B
+      capturedMsgNeedsData := false.B
+    }
+  }.elsewhen(capturedMsg_valid && capturedMsg_done) {
+    capturedMsg_valid := false.B
+    capturedMsgNeedsData := false.B
+  }
+
+  io.traceMsg.bits := capturedMsg
+
+  when(capturedMsg_valid) {
+    when(capturedMsgNeedsData && rf_wen && rf_waddr === capturedMsg.rd && !capturedMsgIsCSR) {
+      capturedMsg_done := true.B
+      io.traceMsg.bits.word1 := rf_wdata
+      assert(branch === false)
+      if (params.debug) printf("[TV] [Tile] C0: %d : Stored 0x%x into reg %d from 0x%x\n", time, rf_wdata, capturedMsg.rd, stored_addr)
+      io.traceMsg.valid := true.B
+    }.elsewhen(capturedMsgIsCSR) {
+      capturedMsg_done := true.B
+      io.traceMsg.bits.word3 := csr_trace_waddr
+      io.traceMsg.bits.word4 := csr_trace_wdata
+      if (params.debug) printf("[TV] [Tile] C0: %d : Updated 0x%x in CSR 0x%x\n", time, csr_trace_wdata, csr_trace_waddr)
+      io.traceMsg.valid := true.B
+    }.elsewhen(!capturedMsgNeedsData) {
+      if (params.debug) printf("[TV] [Tile] C0: %d : No data needed. Passing on traceMsg\n", time)
+      io.traceMsg.valid := true.B
+      capturedMsg_done := true.B
+    }.otherwise {
+      io.traceMsg.valid := false.B
+      capturedMsg_done := false.B
     }
   }.otherwise {
-    isStoreReady := false
+    io.traceMsg.valid := false.B
+    capturedMsg_done := false.B
   }
 
 }
