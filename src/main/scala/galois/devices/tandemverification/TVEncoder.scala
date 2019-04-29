@@ -39,7 +39,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
   // Use two queues - one from the tap module and one to the consumer module
   // The consumer module requires a larger queue as the CPU does not stall instantly in the current configuration
   val inQueue = Module(new Queue(new TraceMessage, entries = 2, pipe = false, flow = false))
-  val outQueue = Module(new Queue(new TraceVector, entries = 8, pipe = false, flow = false))
+  val outQueue = Module(new Queue(new TraceVector, entries = 12, pipe = false, flow = false))
   inQueue.io.enq <> io.traceData
   io.encodedOutput <> outQueue.io.deq
 
@@ -252,8 +252,18 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     storedMsgValid := false
   }
 
-  // Stall when there is something in the output queue *or* we are about to put something in the queue
-   tv_stall := (outQueue.io.count >= 6.U) // | outQueue.io.enq.valid
+  // Stall when the output queue becomes backed up
+  /* NOTE: This value is surprisingly small! This is on purpose as the CPU does not stall instantaneously.
+   * An issue arises just after recovering from a stall where multiple instructions commit quickly and can quickly
+   * refill the outQueue, which in turn causes dropped traces.
+   *
+   * This combination of stall condition and queue slots can very likely be further optimized to save area/resources.
+   */
+   tv_stall := (outQueue.io.count >= 2.U)
+
+  // Some assertions to for debugging
+  assert(outQueue.io.enq.ready || !outQueue.io.enq.valid, "Trying to add to outQueue when ready is low")
+  assert(inQueue.io.enq.ready || !inQueue.io.enq.valid, "Trying to add to inQueue when ready is low")
 
   // Debug
   when (tv_stall) {
