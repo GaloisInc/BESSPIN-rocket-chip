@@ -125,12 +125,15 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     switch (msize) {
       is (TraceEnc.te_mem_req_size_8) {
         returnVec.count := 1.U
+        for (i <- 1 to 7) returnVec.vec(i) := 0.U
       }
       is (TraceEnc.te_mem_req_size_16) {
         returnVec.count := 2.U
+        for (i <- 2 to 7) returnVec.vec(i) := 0.U
       }
       is (TraceEnc.te_mem_req_size_32) {
         returnVec.count := 4.U
+        for (i <- 4 to 7) returnVec.vec(i) := 0.U
       }
       is (TraceEnc.te_mem_req_size_64) {
         returnVec.count := 8.U
@@ -173,12 +176,15 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     switch (msize) {
       is (TraceEnc.te_mem_req_size_8) {
         returnVec.count := 3.U
+        for (i <- 1 to 7) returnVec.vec(i+2) := 0.U
       }
       is (TraceEnc.te_mem_req_size_16) {
         returnVec.count := 4.U
+        for (i <- 2 to 7) returnVec.vec(i+2) := 0.U
       }
       is (TraceEnc.te_mem_req_size_32) {
         returnVec.count := 6.U
+        for (i <- 4 to 7) returnVec.vec(i+2) := 0.U
       }
       is (TraceEnc.te_mem_req_size_64) {
         returnVec.count := 10.U
@@ -316,10 +322,11 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
         outQueue.io.enq.valid := true
       }
       is (TraceOP.trace_store) {
-        if(params.debug) printf("[TVE] Encoding ISR | pc = 0x%x\n", storedMsg.pc)
+        if(params.debug) printf("[TVE] Encoding ISR | pc = 0x%x | msize = %d\n", storedMsg.pc, extractMemSize(storedMsg.instr))
         fields(1) := encodePC(storedMsg.pc)
         fields(2) := encodeInstr(storedMsg.instr_size, storedMsg.instr)
         fields(3) := encodeStore(extractMemSize(storedMsg.instr), storedMsg.word2)
+        //printf("[TVE] field3 = [%d] 0x%x\n", fields(3).count, fields(3).vec.asUInt())
         fields(4) := encodeEaddr(storedMsg.word3)
         encVec := fieldsToTraceVector(convertedFields, fields, 4)
         encVec.vec(encVec.count - 1) := TraceEnc.te_op_end_group

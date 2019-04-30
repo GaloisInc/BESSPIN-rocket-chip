@@ -37,7 +37,8 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   val dmem_addr     = Wire(UInt(width = if (p(XLen) == 64) 64 else 32))
   val stored_addr   = Reg(next = Reg(next = dmem_addr))
   val dmem_data     = Wire(UInt(width = p(XLen)))
-  val stored_data   = Reg(next = Reg(next = dmem_data))
+  val stored_data_old   = Reg(next = Reg(next = dmem_data))
+  val stored_data   = dmem_data
   val mem_reg_store = Wire(Bool())
   val mem_reg_load  = Wire(Bool())
   val mem           = Wire(Bool())
@@ -124,6 +125,8 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   when(fpu_load_wb) {
     if (params.debug) printf("[TV] [Tile] [FP] [%d] Addr = 0x%x | Data = 0x%x!\n", time, fpu_tag, fpu_data)
   }
+
+//  if (params.debug) printf("[TV] [Tile] [STORE] C0: %d | dmem_data = 0x%x | stored_data = 0x%x", time, dmem_data, stored_data_old)
 
   // Need to reconfigure how this works. It will be separated into two stages, capture and post-process
   // In most cases, the post-process stage will do nothing
