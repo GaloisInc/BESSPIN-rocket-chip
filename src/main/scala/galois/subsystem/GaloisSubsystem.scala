@@ -16,6 +16,7 @@ import freechips.rocketchip.tilelink._
 import freechips.rocketchip.interrupts._
 import freechips.rocketchip.rocket.TracedInstruction
 import freechips.rocketchip.util._
+import galois.devices.HasPeripheryDebugWithTapModuleImp
 
 trait HasGaloisTiles extends HasTiles
 //    with CanHaveExtCLINT
@@ -46,7 +47,7 @@ trait HasGaloisTiles extends HasTiles
 }
 
 trait HasGaloisTilesModuleImp extends HasTilesModuleImp
-    with HasPeripheryDebugModuleImp {
+    with HasPeripheryDebugWithTapModuleImp {
   val outer: HasGaloisTiles
 }
 
