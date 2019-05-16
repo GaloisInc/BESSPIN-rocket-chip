@@ -1,4 +1,14 @@
+// Galois, Inc
+// 2019
+//
+// Dylan Hand
+
+// This is a simple pass-through module to allow JTAG configuration to work
+
 module DMITap(
+  input clock,
+  input reset,
+
   input dmi_in_dmiClock,
   input dmi_in_dmiReset,
 

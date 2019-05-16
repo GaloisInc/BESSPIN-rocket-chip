@@ -45,6 +45,8 @@ trait HasPeripheryDebugWithTapModuleImp extends LazyModuleImp {
     outer.debug.module.io.dmi <> tap.io.dmi_out
     tap.io.dmi_in.dmi <> dtm.io.dmi
     tap.io.dmi_in.dmiClock := sj.jtag.TCK
+    tap.io.clock := clock
+    tap.io.reset := reset
 
     val psd = debug.psd.getOrElse(Wire(new PSDTestMode).fromBits(0.U))
     outer.debug.module.io.psd <> psd
@@ -55,6 +57,8 @@ trait HasPeripheryDebugWithTapModuleImp extends LazyModuleImp {
 
 class DMITap(implicit val p: Parameters) extends BlackBox with HasBlackBoxResource {
   val io = IO(new Bundle() {
+    val clock = Clock(INPUT)
+    val reset = Bool(INPUT)
     val dmi_in = new ClockedDMIIO().flip()
     val dmi_out = new ClockedDMIIO()
   })
