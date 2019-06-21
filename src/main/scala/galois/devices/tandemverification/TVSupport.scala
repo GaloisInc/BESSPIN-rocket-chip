@@ -110,4 +110,5 @@ class TVConsumer(params: TandemVerificationParams) extends Module with DontTouch
 
   dontTouch(runCounter)
   dontTouch(counter)
+  dontTouch(io.traceout)
 }

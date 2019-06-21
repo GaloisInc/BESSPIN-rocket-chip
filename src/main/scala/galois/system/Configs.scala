@@ -40,12 +40,12 @@ class P1Config extends Config(
 )
 
 class P1TVConfig extends Config(
-  new WithTandemVerification(true) ++
+  new WithTandemVerification(false, false) ++
   new P1Config
 )
 
 class P2TVConfig extends Config(
-  new WithTandemVerification(true) ++
+  new WithTandemVerification() ++
   new P2Config
 )
 
