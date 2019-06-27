@@ -276,7 +276,7 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
     if (params.debug) printf("[TV] CPU Stalled. inQueue = %d | outQueue = %d\n", inQueue.io.count, outQueue.io.count)
   }
 
-  printf("[TV] inQueue = %d | outQueue = %d\n", inQueue.io.count, outQueue.io.count)
+  if (params.debug) printf("[TV] inQueue = %d | outQueue = %d\n", inQueue.io.count, outQueue.io.count)
 
   var endPosVec = Wire(Vec(5, UInt(7.W)))
   val fields = Wire(Vec(8, new TraceVector))
