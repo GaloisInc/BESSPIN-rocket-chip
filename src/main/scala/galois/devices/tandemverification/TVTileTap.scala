@@ -159,7 +159,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       if (params.debug) printf("[TV] [Tile] Floating point instruction\n")
     }
       .elsewhen(wxd && rd =/= UInt(0) && has_data) {
-        assert(branch === false)
+        // assert(branch === false)
 
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d 0x%x addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rf_wdata, stored_addr)
 
@@ -176,7 +176,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       }
       .elsewhen(wxd && rd =/= UInt(0) && !has_data) {
         TVFunctions.generate_tm_i(capturedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
-        assert(branch === false)
+        // assert(branch === false)
         capturedMsg_valid := true.B
         capturedMsgNeedsData := true.B
         if (params.debug) printf("[TV] [Tile] C0: %d : Stored Message for rd = %d\n", time, rd)
@@ -235,7 +235,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     when(capturedMsgNeedsData && rf_wen && rf_waddr === capturedMsg.rd && !capturedMsgIsCSR) {
       capturedMsg_done := true.B
       io.traceMsg.bits.word1 := rf_wdata
-      assert(branch === false)
+      // assert(branch === false)
       if (params.debug) printf("[TV] [Tile] C0: %d : Stored 0x%x into reg %d from 0x%x\n", time, rf_wdata, capturedMsg.rd, stored_addr)
       io.traceMsg.valid := true.B
     }.elsewhen(capturedMsgIsCSR) {

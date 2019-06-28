@@ -268,8 +268,8 @@ class TVEncoder(params: TandemVerificationParams)(implicit p: Parameters) extend
    tv_stall := (outQueue.io.count >= 2.U)
 
   // Some assertions to for debugging
-  assert(outQueue.io.enq.ready || !outQueue.io.enq.valid, "Trying to add to outQueue when ready is low")
-  assert(inQueue.io.enq.ready || !inQueue.io.enq.valid, "Trying to add to inQueue when ready is low")
+  // assert(outQueue.io.enq.ready || !outQueue.io.enq.valid, "Trying to add to outQueue when ready is low")
+  // assert(inQueue.io.enq.ready || !inQueue.io.enq.valid, "Trying to add to inQueue when ready is low")
 
   // Debug
   when (tv_stall) {
