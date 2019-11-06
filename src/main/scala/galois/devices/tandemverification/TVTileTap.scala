@@ -30,6 +30,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   val ll_wen        = Wire(Bool())
   val rf_waddr      = Wire(UInt(width = 5))
   val wb_set_sboard = Wire(Bool())
+  val mulDiv_valid  = Wire(Bool())
   val wb_wen        = Wire(Bool())
   val rf_wen        = Wire(Bool())
   val has_data      = wb_wen && !wb_set_sboard
@@ -175,11 +176,17 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
         capturedMsgNeedsData := false.B
       }
       .elsewhen(wxd && rd =/= UInt(0) && !has_data) {
-        TVFunctions.generate_tm_i(capturedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
-        // assert(branch === false)
+        when (!isLoad && wb_set_sboard) {
+          TVFunctions.generate_tm_other(capturedMsg, npc, isCompressed, t.insn)(params)
+          capturedMsgNeedsData := false.B
+          if (params.debug) printf("[TV] [Tile] C0: %d : Received instruction that requires scoreboard. Tracing final register update not currently supported!\n", time)
+        }.otherwise {
+          TVFunctions.generate_tm_i(capturedMsg, isLoad, npc, isCompressed, t.insn, rd, rf_wdata, stored_addr)(params)
+          // assert(branch === false)
+          capturedMsgNeedsData := true.B
+          if (params.debug) printf("[TV] [Tile] C0: %d : Stored Message for rd = %d\n", time, rd)
+        }
         capturedMsg_valid := true.B
-        capturedMsgNeedsData := true.B
-        if (params.debug) printf("[TV] [Tile] C0: %d : Stored Message for rd = %d\n", time, rd)
         if (params.debug) printf("[TV] [Tile] C0: %d : %d 0x%x (0x%x) x%d p%d 0xXXXXXXXXXXXXXXXX addr = 0x%x\n", time, t.priv, t.iaddr, t.insn, rd, rd, stored_addr)
       }
       .otherwise {
@@ -215,7 +222,10 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     //    TVFunctions.generate_tm_intr(io.traceMsg.bits, npc, epriv, csr_mstatus, cause, epc, tval)
     capturedMsg_valid := false.B
     capturedMsgNeedsData := false.B
-  }.elsewhen (ll_wen && rf_waddr =/= UInt(0)) {
+  }.elsewhen (ll_wen  && !mulDiv_valid && rf_waddr =/= UInt(0)) {
+    // Add condition on mulDiv_valid to make sure we're not trying to update a previously executed Mul/Div instruction
+    // Currently, scoreboard operations are not supported beyond waiting for D$ updates. RoCC also should be checked
+    // if that is used.
     if (params.debug) printf ("[TV] [Tile] C0: %d : x%d p%d 0x%x\n", time, rf_waddr, rf_waddr, rf_wdata)
     when (isLoad) { if (params.debug) printf("[TV] [Tile] Load Instruction Type 2\n") }
     when (isStore) {
@@ -232,7 +242,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   io.traceMsg.bits := capturedMsg
 
   when(capturedMsg_valid) {
-    when(capturedMsgNeedsData && rf_wen && rf_waddr === capturedMsg.rd && !capturedMsgIsCSR) {
+    when(capturedMsgNeedsData && rf_wen && rf_waddr === capturedMsg.rd  && !mulDiv_valid && !capturedMsgIsCSR) {
       capturedMsg_done := true.B
       io.traceMsg.bits.word1 := rf_wdata
       // assert(branch === false)
@@ -245,7 +255,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       if (params.debug) printf("[TV] [Tile] C0: %d : Updated 0x%x in CSR 0x%x\n", time, csr_trace_wdata, csr_trace_waddr)
       io.traceMsg.valid := true.B
     }.elsewhen(!capturedMsgNeedsData) {
-      if (params.debug) printf("[TV] [Tile] C0: %d : No data needed. Passing on traceMsg\n", time)
+      if (params.debug) printf("[TV] [Tile] C0: %d : No data needed. Passing on traceMsg (pc = 0x%x)\n", time, capturedMsg.pc)
       io.traceMsg.valid := true.B
       capturedMsg_done := true.B
     }.otherwise {
