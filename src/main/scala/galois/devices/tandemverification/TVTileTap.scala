@@ -233,6 +233,11 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       TVFunctions.generate_tm_store(capturedMsg, npc, isCompressed, t.insn, stored_data, stored_addr)(params)
       capturedMsg_valid := true.B
       capturedMsgNeedsData := false.B
+    }.elsewhen (capturedMsg_valid && capturedMsg_done) {
+      // Check if some other condition in captureMsg has been met that allowed it to finish. If so, we
+      // should not keep the msg valid
+      capturedMsg_valid := false.B
+      capturedMsgNeedsData := false.B
     }
   }.elsewhen(capturedMsg_valid && capturedMsg_done) {
     capturedMsg_valid := false.B
