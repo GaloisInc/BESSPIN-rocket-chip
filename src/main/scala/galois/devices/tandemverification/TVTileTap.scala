@@ -117,7 +117,7 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
   //  }
 
   val isNop = Wire(Bool())
-  isNop := t.insn === 0x00000013
+  isNop := t.insn === 0x00000013.U
 
   capturedMsgIsCSR := capturedMsg.op === TraceOP.trace_csr_write
 
@@ -146,8 +146,9 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
     capturedMsg_valid := true.B
   }.elsewhen(t.valid && !t.exception) {
     // Make sure we don't clear out a previously stored message if a nop is committed
-    when(capturedMsg_valid && !capturedMsgIsCSR) {
-      when(isNop == false) {
+    // This condition will no longer hold when releasing instruction early - a different warning is printed instead.
+    when(capturedMsg_valid && !capturedMsgIsCSR && !capturedMsg_done) {
+      when(isNop === false.B) {
         if (params.debug) printf("[TV] [Tile] [WARN] New instruction committed before previously stored instruction sent to TraceEncoder. Check instruction stream!\n")
       }
     }
@@ -261,6 +262,16 @@ class TVTileTap(params: TandemVerificationParams)(implicit p: Parameters) extend
       io.traceMsg.valid := true.B
     }.elsewhen(!capturedMsgNeedsData) {
       if (params.debug) printf("[TV] [Tile] C0: %d : No data needed. Passing on traceMsg (pc = 0x%x)\n", time, capturedMsg.pc)
+      io.traceMsg.valid := true.B
+      capturedMsg_done := true.B
+    }.elsewhen(capturedMsgNeedsData && t.valid && !t.exception && !isNop) {
+      // We are storing a message that needs data, but the CPU has already committed an unrelated instruction
+      // This is a temporary work-around to push the instruction to the trace with incorrect data and/or effective address
+      // while a more robust solution is developed
+      if (params.debug) {
+        printf("[TV] [Tile] [WARN] C0: %d : New instruction committed before data was available for previous instruction." +
+        " Passing on traceMsg with possibly incorrect data (pc = 0x%x)\n", time, capturedMsg.pc)
+      }
       io.traceMsg.valid := true.B
       capturedMsg_done := true.B
     }.otherwise {
