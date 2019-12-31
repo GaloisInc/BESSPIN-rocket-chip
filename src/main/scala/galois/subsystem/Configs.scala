@@ -1,23 +1,22 @@
 // See LICENSE.SiFive for license details.
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.system
+package galois.subsystem
 
 import Chisel._
 import freechips.rocketchip.config.Config
 import freechips.rocketchip.subsystem._
+import freechips.rocketchip.devices.debug._
 import freechips.rocketchip.diplomacy._
 
 class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
 class WithDebugSBASystem extends freechips.rocketchip.subsystem.WithDebugSBA
-class WithDebugAPB extends freechips.rocketchip.subsystem.WithDebugAPB
 
 class BaseConfig extends Config(
   new WithDefaultMemPort() ++
   new WithDefaultMMIOPort() ++
   new WithDefaultSlavePort() ++
- // new WithTimebase(BigInt(1000000)) ++ // 1 MHz
-  new WithTimebase(BigInt(100000000)) ++
+  new WithTimebase(BigInt(1000000)) ++ // 1 MHz
   new WithDTS("freechips,rocketchip-unknown", Nil) ++
   new WithNExtTopInterrupts(2) ++
   new BaseSubsystemConfig()
@@ -38,7 +37,7 @@ class DualChannelConfig extends Config(new WithNMemoryChannels(2) ++ new BaseCon
 
 class DualChannelDualBankConfig extends Config(
   new WithNMemoryChannels(2) ++
-  new WithNBanks(4) ++ new BaseConfig)
+  new WithNBanks(2) ++ new BaseConfig)
 
 class RoccExampleConfig extends Config(new WithRoccExample ++ new DefaultConfig)
 
@@ -60,7 +59,6 @@ class DualCoreConfig extends Config(
 class TinyConfig extends Config(
   new WithNoMemPort ++
   new WithNMemoryChannels(0) ++
-  new WithNBanks(0) ++
   new With1TinyCore ++
   new BaseConfig)
 
@@ -74,7 +72,6 @@ class MMIOPortOnlyConfig extends Config(
   new WithNoSlavePort ++
   new WithNoMemPort ++
   new WithNMemoryChannels(0) ++
-  new WithNBanks(0) ++
   new WithIncoherentTiles ++
   new WithScratchpadsOnly ++
   new DefaultConfig
