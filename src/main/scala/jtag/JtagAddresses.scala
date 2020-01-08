@@ -1,5 +1,5 @@
 
-package freechips.rocketchip.galois.devices
+package freechips.rocketchip.jtag
 
 import freechips.rocketchip.devices.debug.dtmJTAGAddrs
 
