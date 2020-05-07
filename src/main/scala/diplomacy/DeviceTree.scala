@@ -1,8 +1,8 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomacy
+package ssithchips.rocketchip.diplomacy
 
-import freechips.rocketchip.config.Field
+import ssithchips.rocketchip.config.Field
 import sys.process._
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 

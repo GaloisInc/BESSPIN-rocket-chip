@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.ahb
+package ssithchips.rocketchip.amba.ahb
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
 import scala.math.{min,max}
 
 class AHBFanout()(implicit p: Parameters) extends LazyModule {

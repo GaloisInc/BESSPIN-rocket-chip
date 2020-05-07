@@ -1,8 +1,8 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.groundtest
+package ssithchips.rocketchip.groundtest
 
-import freechips.rocketchip.util.GeneratorApp
+import ssithchips.rocketchip.util.GeneratorApp
 
 object Generator extends GeneratorApp {
   val longName = names.topModuleProject + "." + names.configs

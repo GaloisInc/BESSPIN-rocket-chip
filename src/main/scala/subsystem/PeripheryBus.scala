@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
-import freechips.rocketchip.config.{Parameters}
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.{Parameters}
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 case class BusAtomics(
   arithmetic: Boolean = true,

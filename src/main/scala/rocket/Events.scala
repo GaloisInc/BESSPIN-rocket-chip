@@ -1,11 +1,11 @@
 // See LICENSE.Berkeley for license details.
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
 
 class EventSet(gate: (UInt, UInt) => Bool, events: Seq[(String, () => Bool)]) {
   def size = events.size

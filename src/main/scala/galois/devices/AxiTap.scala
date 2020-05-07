@@ -4,9 +4,9 @@
 package galois.devices
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.amba.axi4._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.amba.axi4._
 
 class AXI4Tap()(implicit p: Parameters) extends LazyModule
 {

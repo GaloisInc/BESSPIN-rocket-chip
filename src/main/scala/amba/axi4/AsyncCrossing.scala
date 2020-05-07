@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.subsystem.CrossingWrapper
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.subsystem.CrossingWrapper
+import ssithchips.rocketchip.util._
 
 class AXI4AsyncCrossingSource(sync: Option[Int])(implicit p: Parameters) extends LazyModule
 {
@@ -87,7 +87,7 @@ class AXI4AsyncCrossing(params: AsyncQueueParams = AsyncQueueParams())(implicit 
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class AXI4RAMAsyncCrossing(txns: Int)(implicit p: Parameters) extends LazyModule {
   val model = LazyModule(new TLRAMModel("AsyncCrossing"))

@@ -1,12 +1,12 @@
 package galois.devices
 
 import Chisel._
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.subsystem.BaseSubsystem
-import freechips.rocketchip.util.Annotated
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.subsystem.BaseSubsystem
+import ssithchips.rocketchip.util.Annotated
 
 case object ExtCLINTKey extends Field[Option[CLINTParams]](None)
 

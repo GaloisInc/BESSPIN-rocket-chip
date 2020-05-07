@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
 import chisel3.util.{ReadyValidIO}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 abstract class TLBundleBase(params: TLBundleParameters) extends GenericParameterizedBundle(params)
 

@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 // We detect concurrent puts that put memory into an undefined state.
 // put0, put0Ack, put1, put1Ack => ok: defined

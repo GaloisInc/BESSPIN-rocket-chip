@@ -1,17 +1,17 @@
 // See LICENSE.SiFive for license details.
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.devices.debug._
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.rocket._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.devices.debug._
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.rocket._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 class BaseSubsystemConfig extends Config ((site, here, up) => {
   // Tile parameters

@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.unittest
+package ssithchips.rocketchip.unittest
 
 import Chisel._
-import chisel3.experimental.MultiIOModule
-import freechips.rocketchip.config._
-import freechips.rocketchip.util._
+import chisel3.MultiIOModule
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.util._
 
 trait UnitTestIO {
   val finished = Bool(OUTPUT)

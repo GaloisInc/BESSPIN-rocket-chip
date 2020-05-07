@@ -1,11 +1,11 @@
 // See LICENSE.Berkeley for license details.
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.util._
 import ALU._
 
 class MultiplierReq(dataBits: Int, tagBits: Int) extends Bundle {

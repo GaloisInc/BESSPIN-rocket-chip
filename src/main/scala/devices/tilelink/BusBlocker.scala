@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.tilelink
+package ssithchips.rocketchip.devices.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 /** BasicBusBlocker uses a single bit register to control whether
   * accesses of all types are allowed to proceed or bypassed to

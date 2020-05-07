@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util.RationalDirection
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util.RationalDirection
 
 case class TLInwardCrossingHelper(name: String, scope: LazyScope, node: TLInwardNode) {
   def apply(xing: ClockCrossingType = NoCrossing)(implicit p: Parameters): TLInwardNode = {

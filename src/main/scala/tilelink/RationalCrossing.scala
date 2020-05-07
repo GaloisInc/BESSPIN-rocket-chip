@@ -7,12 +7,12 @@
 //   - All outputs of TLRational are registers (bits, valid, and ready).
 //   - It costs 3*bits registers as opposed to 2*bits in a TLBuffer(2)
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 class TLRationalCrossingSource(implicit p: Parameters) extends LazyModule
 {
@@ -119,7 +119,7 @@ class TLRationalCrossing(direction: RationalDirection = Symmetric)(implicit p: P
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLRAMRationalCrossingSource(name: String, txns: Int)(implicit p: Parameters) extends LazyModule {
   val node = TLRationalIdentityNode()

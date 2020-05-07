@@ -1,14 +1,14 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import chisel3.experimental.MultiIOModule
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.unittest._
-import freechips.rocketchip.util.{Pow2ClockDivider}
+import chisel3.MultiIOModule
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.unittest._
+import ssithchips.rocketchip.util.{Pow2ClockDivider}
 
 object LFSR16Seed
 {

@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.interrupts
+package ssithchips.rocketchip.interrupts
 
 import chisel3._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
 
 /** Mix this trait into a RegisterRouter to be able to attach its interrupt sources to an interrupt bus */
 trait HasInterruptSources { this: RegisterRouter[_] =>

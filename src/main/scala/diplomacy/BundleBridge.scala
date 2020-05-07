@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomacy
+package ssithchips.rocketchip.diplomacy
 
 import chisel3._
 import chisel3.internal.sourceinfo.SourceInfo
 import chisel3.core.{DataMirror,ActualDirection}
 import chisel3.experimental.IO
-import freechips.rocketchip.config.{Parameters,Field}
+import ssithchips.rocketchip.config.{Parameters,Field}
 
 case class BundleBridgeParams[T <: Data](gen: () => T)
 case class BundleBridgeNull()

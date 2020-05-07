@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.interrupts
+package ssithchips.rocketchip.interrupts
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.util.{SynchronizerShiftReg, AsyncResetReg}
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.util.{SynchronizerShiftReg, AsyncResetReg}
+import ssithchips.rocketchip.diplomacy._
 
 @deprecated("IntXing does not ensure interrupt source is glitch free. Use IntSyncSource and IntSyncSink", "rocket-chip 1.2")
 class IntXing(sync: Int = 3)(implicit p: Parameters) extends LazyModule

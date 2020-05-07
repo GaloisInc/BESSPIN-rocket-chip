@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.regmapper._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.regmapper._
 
 case class ExampleParams(num: Int, address: BigInt)
 

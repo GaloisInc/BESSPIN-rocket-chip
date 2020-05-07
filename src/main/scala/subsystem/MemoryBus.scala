@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 // TODO: applies to all caches, for now
 case object CacheBlockBytes extends Field[Int](64)

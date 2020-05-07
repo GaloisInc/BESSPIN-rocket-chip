@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomaticobjectmodel.model
+package ssithchips.rocketchip.diplomaticobjectmodel.model
 
 trait OMExtensionType extends OMEnum
 case object M extends OMExtensionType

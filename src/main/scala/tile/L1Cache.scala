@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tile
+package ssithchips.rocketchip.tile
 
 import Chisel._
 
-import freechips.rocketchip.config.{Parameters, Field}
-import freechips.rocketchip.subsystem.CacheBlockBytes
-import freechips.rocketchip.tilelink.ClientMetadata
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.{Parameters, Field}
+import ssithchips.rocketchip.subsystem.CacheBlockBytes
+import ssithchips.rocketchip.tilelink.ClientMetadata
+import ssithchips.rocketchip.util._
 
 trait L1CacheParams {
   def nSets:         Int

@@ -1,8 +1,8 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.unittest
+package ssithchips.rocketchip.unittest
 
-object Generator extends freechips.rocketchip.util.GeneratorApp {
+object Generator extends ssithchips.rocketchip.util.GeneratorApp {
   val longName = names.topModuleProject + "." + names.configs
   generateFirrtl
   generateAnno

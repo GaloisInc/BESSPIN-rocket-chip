@@ -1,9 +1,9 @@
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.rocket.constants
+package ssithchips.rocketchip.rocket.constants
 
 import Chisel._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.util._
 import scala.math._
 
 trait ScalarOpConstants {

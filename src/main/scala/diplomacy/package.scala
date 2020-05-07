@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip
+package ssithchips.rocketchip
 
 import chisel3.internal.sourceinfo.{SourceInfo, SourceLine, UnlocatableSourceInfo}
-import freechips.rocketchip.config.Parameters
+import ssithchips.rocketchip.config.Parameters
 import scala.language.implicitConversions
 
 package object diplomacy

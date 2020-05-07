@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba
+package ssithchips.rocketchip.amba
 
 import Chisel._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.diplomacy._
 
 package object ahb
 {

@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomacy
+package ssithchips.rocketchip.diplomacy
 
 import Chisel._
-import freechips.rocketchip.util.{ShiftQueue, RationalDirection, FastToSlow, AsyncQueueParams}
+import ssithchips.rocketchip.util.{ShiftQueue, RationalDirection, FastToSlow, AsyncQueueParams}
 
 /** Options for memory regions */
 object RegionType {

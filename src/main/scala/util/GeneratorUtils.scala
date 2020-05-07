@@ -1,17 +1,17 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
-import chisel3.experimental.RawModule
+import chisel3.RawModule
 import chisel3.internal.firrtl.Circuit
 // TODO: better job of Makefrag generation for non-RocketChip testing platforms
 import java.io.{File, FileWriter}
 
 import firrtl.annotations.JsonProtocol
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.system.{DefaultTestSuites, TestGeneration}
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.system.{DefaultTestSuites, TestGeneration}
 
 /** Representation of the information this Generator needs to collect from external sources. */
 case class ParsedInputNames(

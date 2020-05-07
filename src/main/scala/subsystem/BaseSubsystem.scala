@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.config.{Parameters, Field}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.diplomaticobjectmodel.DiplomaticObjectModelUtils
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.{Parameters, Field}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.diplomaticobjectmodel.DiplomaticObjectModelUtils
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 case object SystemBusKey extends Field[SystemBusParams]
 case object FrontBusKey extends Field[FrontBusParams]

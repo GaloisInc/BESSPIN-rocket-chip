@@ -9,10 +9,10 @@ package galois.devices.tandemverification
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.rocket._
-import freechips.rocketchip.util._
-import freechips.rocketchip.tile.{CoreParams, HasCoreParameters, TileKey, XLen}
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.rocket._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.tile.{CoreParams, HasCoreParameters, TileKey, XLen}
 
 class TileTapIO()(implicit p: Parameters) extends Bundle {
   val traceData = (new TracedInstruction).asInput

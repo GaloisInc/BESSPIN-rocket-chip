@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util.property
+package ssithchips.rocketchip.util.property
 
 import Chisel._
 import chisel3.internal.sourceinfo.{SourceInfo, SourceLine}

@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomaticobjectmodel
+package ssithchips.rocketchip.diplomaticobjectmodel
 
 import java.io.{File, FileWriter}
 import java.lang.management.OperatingSystemMXBean

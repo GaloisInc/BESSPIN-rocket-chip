@@ -3,8 +3,8 @@
 package galois.subsystem
 
 import Chisel._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem.BaseSubsystem
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem.BaseSubsystem
 import galois.devices._
 
 /** This trait adds externally driven interrupts to the system.

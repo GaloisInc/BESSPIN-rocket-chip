@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.unittest
+package ssithchips.rocketchip.unittest
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
 
 abstract class LazyUnitTest(implicit p: Parameters) extends LazyModule
 { self =>

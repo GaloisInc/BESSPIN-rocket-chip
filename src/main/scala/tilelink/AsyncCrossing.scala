@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem.CrossingWrapper
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem.CrossingWrapper
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
 
 class TLAsyncCrossingSource(sync: Option[Int])(implicit p: Parameters) extends LazyModule
 {
@@ -123,7 +123,7 @@ class TLAsyncCrossing(params: AsyncQueueParams = AsyncQueueParams())(implicit p:
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLRAMAsyncCrossing(txns: Int, params: AsynchronousCrossing = AsynchronousCrossing())(implicit p: Parameters) extends LazyModule {
   val model = LazyModule(new TLRAMModel("AsyncCrossing"))

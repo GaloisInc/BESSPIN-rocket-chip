@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
 
 case class AXI4InwardCrossingHelper(name: String, scope: LazyScope, node: AXI4InwardNode) {
   def apply(xing: ClockCrossingType = NoCrossing)(implicit p: Parameters): AXI4InwardNode = {

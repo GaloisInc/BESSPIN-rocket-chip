@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 case class AXI4ToTLNode(wcorrupt: Boolean = false)(implicit valName: ValName) extends MixedAdapterNode(AXI4Imp, TLImp)(
   dFn = { case AXI4MasterPortParameters(masters, userBits) =>

@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
 import chisel3.util.{Irrevocable, IrrevocableIO}

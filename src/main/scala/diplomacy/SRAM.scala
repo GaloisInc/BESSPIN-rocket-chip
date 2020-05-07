@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomacy
+package ssithchips.rocketchip.diplomacy
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.util.DescribedSRAM
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.util.DescribedSRAM
 
 abstract class DiplomaticSRAM(
     address: AddressSet,

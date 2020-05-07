@@ -9,10 +9,10 @@ package galois.devices.tandemverification
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.diplomacy.LazyModuleImp
-import freechips.rocketchip.tile.{CoreBundle, XLen}
-import freechips.rocketchip.util.DontTouch
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.diplomacy.LazyModuleImp
+import ssithchips.rocketchip.tile.{CoreBundle, XLen}
+import ssithchips.rocketchip.util.DontTouch
 import galois.subsystem.{GaloisSubsystem, GaloisSubsystemModuleImp}
 
 // Various support functions, data structures, and parameters
@@ -92,7 +92,7 @@ class TVConsumer(params: TandemVerificationParams) extends Module with DontTouch
     if (params.debug) printf("[DUT] Vector Accepted\n")
     // Format is the number of valid bytes followed by the byte array in hex format. This array will be packed right to left
     // so the post-processing software will likely have to byte-reverse the string
-    if (params.dumpTrace) printf("[DUT] [HEX] [%d] %x\n", io.traceout.data.bits.count, io.traceout.data.bits.vec.asUInt())
+    if (params.dumpTrace) printf("[DUT] [HEX] [%d] %x\n", io.traceout.bits.count, io.traceout.bits.vec.asUInt())
   }
 
   when (runCounter || counter =/= 0.U) {

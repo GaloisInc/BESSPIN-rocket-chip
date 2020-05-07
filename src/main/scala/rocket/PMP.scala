@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.util._
 
 class PMPConfig extends Bundle {
   val l = Bool()

@@ -1,15 +1,15 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug.systembusaccess
+package ssithchips.rocketchip.devices.debug.systembusaccess
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
-import freechips.rocketchip.devices.debug._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
+import ssithchips.rocketchip.devices.debug._
 
 object SystemBusAccessState extends scala.Enumeration {
    type SystemBusAccessState = Value

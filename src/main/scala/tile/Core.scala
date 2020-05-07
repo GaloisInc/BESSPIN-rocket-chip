@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tile
+package ssithchips.rocketchip.tile
 
 import Chisel._
 
-import freechips.rocketchip.config._
-import freechips.rocketchip.rocket._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.rocket._
+import ssithchips.rocketchip.util._
 
 case object XLen extends Field[Int]
 

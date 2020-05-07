@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.macros
+package ssithchips.rocketchip.macros
 
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
@@ -17,7 +17,7 @@ object ValNameImpl
     val terms = allOwners(c.internal.enclosingOwner).filter(_.isTerm).map(_.asTerm)
     terms.filter(t => t.isVal || t.isLazy).map(_.name.toString).find(_(0) != '$').map { s =>
       val trim = s.replaceAll("\\s", "")
-      c.Expr[ValNameImpl] { q"_root_.freechips.rocketchip.macros.ValNameImpl(${trim})" }
+      c.Expr[ValNameImpl] { q"_root_.ssithchips.rocketchip.macros.ValNameImpl(${trim})" }
     }.getOrElse(c.abort(c.enclosingPosition, "Not a valid application."))
   }
 }

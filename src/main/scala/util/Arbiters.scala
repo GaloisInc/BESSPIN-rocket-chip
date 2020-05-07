@@ -1,9 +1,9 @@
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
+import ssithchips.rocketchip.config.Parameters
 
 /** A generalized locking RR arbiter that addresses the limitations of the
  *  version in the Chisel standard library */

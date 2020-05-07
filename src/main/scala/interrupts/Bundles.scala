@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.interrupts
+package ssithchips.rocketchip.interrupts
 
 import Chisel._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 class SyncInterrupts(params: IntEdge) extends GenericParameterizedBundle(params)
 {

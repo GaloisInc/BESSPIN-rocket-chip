@@ -3,15 +3,15 @@
 package galois.subsystem
 
 import Chisel._
-import freechips.rocketchip.devices.debug.TLDebugModule
-import freechips.rocketchip.devices.tilelink.{CLINT, CLINTConsts, CLINTKey, PLICKey, TLPLIC}
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem.BaseSubsystem
-import freechips.rocketchip.tile.BaseTile
+import ssithchips.rocketchip.devices.debug.TLDebugModule
+import ssithchips.rocketchip.devices.tilelink.{CLINT, CLINTConsts, CLINTKey, PLICKey, TLPLIC}
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem.BaseSubsystem
+import ssithchips.rocketchip.tile.BaseTile
 import galois.devices.{ExtCLINT, ExtCLINTKey, ExtPLICKey}
 
-trait HasTiles extends freechips.rocketchip.subsystem.HasTiles { this: BaseSubsystem =>
+trait HasTiles extends ssithchips.rocketchip.subsystem.HasTiles { this: BaseSubsystem =>
 
   val clintNode = p(CLINTKey) match {
     case Some(_) => None
@@ -93,7 +93,7 @@ trait HasTiles extends freechips.rocketchip.subsystem.HasTiles { this: BaseSubsy
   }
 }
 
-trait HasTilesModuleImp extends freechips.rocketchip.subsystem.HasTilesModuleImp {
+trait HasTilesModuleImp extends ssithchips.rocketchip.subsystem.HasTilesModuleImp {
   val outer: HasTiles
 
   val clintint = if(outer.clintNode.isDefined) Some(IO(UInt(INPUT, width = 2))) else None

@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.interrupts
+package ssithchips.rocketchip.interrupts
 
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
 
 case class IntInwardCrossingHelper(name: String, scope: LazyScope, node: IntInwardNode) {
   def apply(xing: ClockCrossingType = NoCrossing, alreadyRegistered: Boolean = false)(implicit p: Parameters): IntInwardNode = {

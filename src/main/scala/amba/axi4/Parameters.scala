@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
 import chisel3.internal.sourceinfo.SourceInfo
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util.AsyncQueueParams
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util.AsyncQueueParams
 import scala.math.max
 
 case class AXI4SlaveParameters(

@@ -9,10 +9,10 @@ package galois.devices.tandemverification
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.tile.XLen
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.tile.XLen
 // util package is required to make toBool work properly. Do not remove!
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.util._
 
 // IO for the TV Encoder. Consumes a TraceMessage from a tap, produces a TraceVector which conforms to the Bluespec
 // trace protocol for consumption by (eventually) the PCIe bridge device

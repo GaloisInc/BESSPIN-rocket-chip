@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.regmapper
+package ssithchips.rocketchip.regmapper
 
 import Chisel._
 import chisel3.util.{ReadyValidIO}
@@ -9,7 +9,7 @@ import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.{pretty, render}
 
-import freechips.rocketchip.util.{SimpleRegIO}
+import ssithchips.rocketchip.util.{SimpleRegIO}
 
 // This information is not used internally by the regmap(...) function.
 // However, the author of a RegField may be the best person to provide this

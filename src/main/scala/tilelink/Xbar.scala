@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
 
 // Trades off slave port proximity against routing resource cost
 object ForceFanout
@@ -312,7 +312,7 @@ object TLXbar
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLRAMXbar(nManagers: Int, txns: Int)(implicit p: Parameters) extends LazyModule {
   val fuzz = LazyModule(new TLFuzzer(txns))

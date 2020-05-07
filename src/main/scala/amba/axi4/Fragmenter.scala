@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
 import chisel3.util.IrrevocableIO
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util.{leftOR, rightOR, UIntToOH1, OH1ToOH}
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util.{leftOR, rightOR, UIntToOH1, OH1ToOH}
 import scala.math.{min,max}
 
 class AXI4Fragmenter()(implicit p: Parameters) extends LazyModule

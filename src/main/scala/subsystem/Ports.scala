@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.amba.axi4._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.amba.axi4._
+import ssithchips.rocketchip.util._
 
 /** Specifies the size and width of external memory ports */
 case class MasterPortParams(

@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.tilelink
+package ssithchips.rocketchip.devices.tilelink
 
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
 
 trait HasBuiltInDeviceParams {
   val zeroDevice: Option[AddressSet]

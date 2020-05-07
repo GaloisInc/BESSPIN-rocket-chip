@@ -1,6 +1,6 @@
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import scala.collection.mutable.{ArrayBuffer, Map}

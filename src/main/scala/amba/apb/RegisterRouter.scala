@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.apb
+package ssithchips.rocketchip.amba.apb
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.interrupts.{IntSourceNode, IntSourcePortSimple}
-import freechips.rocketchip.util.HeterogeneousBag
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.interrupts.{IntSourceNode, IntSourcePortSimple}
+import ssithchips.rocketchip.util.HeterogeneousBag
 import scala.math.{min,max}
 
 case class APBRegisterNode(address: AddressSet, concurrency: Int = 0, beatBytes: Int = 4, undefZero: Boolean = true, executable: Boolean = false)(implicit valName: ValName)

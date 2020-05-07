@@ -4,12 +4,12 @@
 package galois.system
 
 import Chisel._
-import freechips.rocketchip.config.Config
-import freechips.rocketchip.devices.tilelink.{CLINTKey, CLINTParams, PLICKey, PLICParams}
+import ssithchips.rocketchip.config.Config
+import ssithchips.rocketchip.devices.tilelink.{CLINTKey, CLINTParams, PLICKey, PLICParams}
 import galois.devices._
 import galois.subsystem._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem.NExtTopInterrupts
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem.NExtTopInterrupts
 
 class P2Config extends Config(
   new WithGFEMemPort() ++

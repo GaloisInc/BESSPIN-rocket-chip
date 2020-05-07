@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.diplomacy
+package ssithchips.rocketchip.diplomacy
 
 import Chisel._
 import chisel3.internal.sourceinfo.SourceInfo
-import freechips.rocketchip.config.{Parameters,Field}
-import freechips.rocketchip.util.HeterogeneousBag
+import ssithchips.rocketchip.config.{Parameters,Field}
+import ssithchips.rocketchip.util.HeterogeneousBag
 import scala.collection.mutable.ListBuffer
 import scala.util.matching._
 

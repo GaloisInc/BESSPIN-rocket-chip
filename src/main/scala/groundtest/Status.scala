@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.groundtest
+package ssithchips.rocketchip.groundtest
 
 import Chisel._
-import freechips.rocketchip.util.ValidMux
+import ssithchips.rocketchip.util.ValidMux
 
 class GroundTestStatus extends Bundle {
   val finished = Bool(OUTPUT)

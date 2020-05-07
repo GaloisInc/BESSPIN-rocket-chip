@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.apb
+package ssithchips.rocketchip.amba.apb
 
 import Chisel._
 

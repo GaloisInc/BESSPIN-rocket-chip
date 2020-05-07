@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
-import freechips.rocketchip.config._
+import ssithchips.rocketchip.config._
 
 case object IncludePSDTest extends Field[Boolean](false)
 

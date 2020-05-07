@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
 import chisel3.experimental.chiselName
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 class TLRAM(
     address: AddressSet,
@@ -184,7 +184,7 @@ object TLRAM
 }
 
 /** Synthesizeable unit testing */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLRAMSimple(ramBeatBytes: Int, txns: Int)(implicit p: Parameters) extends LazyModule {
   val fuzz = LazyModule(new TLFuzzer(txns))

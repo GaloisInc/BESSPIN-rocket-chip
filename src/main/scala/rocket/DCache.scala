@@ -1,18 +1,19 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy.{AddressSet, RegionType}
-import freechips.rocketchip.tile.LookupByHartId
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy.{AddressSet, RegionType}
+import ssithchips.rocketchip.tile.LookupByHartId
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
 import chisel3.internal.sourceinfo.SourceInfo
 import chisel3.experimental._
 import TLMessages._
+import chisel3.dontTouch
 
 class DCacheErrors(implicit p: Parameters) extends L1HellaCacheBundle()(p)
     with CanHaveErrors {

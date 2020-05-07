@@ -1,8 +1,8 @@
 // See LICENSE.jtag for license details.
 
-package freechips.rocketchip.jtag
+package ssithchips.rocketchip.jtag
 
-import freechips.rocketchip.devices.debug.JtagDTMKey
+import ssithchips.rocketchip.devices.debug.JtagDTMKey
 
 import scala.collection.SortedMap
 
@@ -13,7 +13,7 @@ import chisel3.core.{Input, Output}
 import chisel3.util._
 import chisel3.experimental.withReset
 
-import freechips.rocketchip.config.Parameters
+import ssithchips.rocketchip.config.Parameters
 
 /** JTAG signals, viewed from the master side
   */

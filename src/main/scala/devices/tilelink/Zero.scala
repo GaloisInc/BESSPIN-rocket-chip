@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.tilelink
+package ssithchips.rocketchip.devices.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink.TLMessages
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink.TLMessages
 
 /** This /dev/null device accepts single beat gets/puts, as well as atomics.
   * Response data is always 0. Reequests to write data have no effect.

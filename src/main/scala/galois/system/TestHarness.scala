@@ -3,10 +3,10 @@
 package galois.system
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.devices.debug.Debug
-import freechips.rocketchip.diplomacy.LazyModule
-import freechips.rocketchip.util.DontTouch
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.devices.debug.Debug
+import ssithchips.rocketchip.diplomacy.LazyModule
+import ssithchips.rocketchip.util.DontTouch
 
 class TestHarness()(implicit p: Parameters) extends Module with DontTouch {
   val io = new Bundle {

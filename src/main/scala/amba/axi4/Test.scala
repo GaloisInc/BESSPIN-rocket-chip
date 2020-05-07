@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.unittest._
 
 class RRTest0(address: BigInt)(implicit p: Parameters) extends AXI4RegisterRouter(address, 0, 32, 0, 4)(
   new AXI4RegBundle((), _)    with RRTest0Bundle)(

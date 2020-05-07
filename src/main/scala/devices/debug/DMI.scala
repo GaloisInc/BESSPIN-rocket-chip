@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
 
 /** Constant values used by both Debug Bus Response & Request
   */

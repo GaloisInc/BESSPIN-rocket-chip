@@ -1,4 +1,4 @@
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
 

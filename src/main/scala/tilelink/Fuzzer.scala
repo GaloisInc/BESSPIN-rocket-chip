@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
 
 class IDMapGenerator(numIds: Int) extends Module {
   require (numIds > 0)
@@ -242,7 +242,7 @@ object TLFuzzer
 }
 
 /** Synthesizeable integration test */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLFuzzRAM(txns: Int)(implicit p: Parameters) extends LazyModule
 {

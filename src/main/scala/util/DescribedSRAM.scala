@@ -1,14 +1,14 @@
 // See LICENSE.Berkeley for license details.
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import chisel3.internal.InstanceId
-import freechips.rocketchip.util.Annotated
-import freechips.rocketchip.diplomacy.DiplomaticSRAM
+import ssithchips.rocketchip.util.Annotated
+import ssithchips.rocketchip.diplomacy.DiplomaticSRAM
 import Chisel._
 import chisel3.SyncReadMem
-import freechips.rocketchip.amba.axi4.AXI4RAM
+import ssithchips.rocketchip.amba.axi4.AXI4RAM
 
 import scala.math.log10
 

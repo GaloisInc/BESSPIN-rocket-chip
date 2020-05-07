@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.diplomacy.{LazyModuleImp, DTSTimebase}
-import freechips.rocketchip.devices.tilelink.CanHavePeripheryCLINT
+import ssithchips.rocketchip.diplomacy.{LazyModuleImp, DTSTimebase}
+import ssithchips.rocketchip.devices.tilelink.CanHavePeripheryCLINT
 
 trait HasRTCModuleImp extends LazyModuleImp {
   val outer: BaseSubsystem with CanHavePeripheryCLINT

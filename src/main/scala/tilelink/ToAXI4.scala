@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util._
-import freechips.rocketchip.amba.axi4._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.amba.axi4._
 import scala.math.{min, max}
 
 class TLtoAXI4IdMap(tl: TLClientPortParameters, axi4: AXI4MasterPortParameters) {

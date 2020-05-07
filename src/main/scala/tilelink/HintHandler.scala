@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import chisel3._
 import chisel3.util._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util.Repeater
-import freechips.rocketchip.devices.tilelink.TLROM
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util.Repeater
+import ssithchips.rocketchip.devices.tilelink.TLROM
 import scala.math.min
 
 // Acks Hints for managers that don't support them or Acks all Hints if !passthrough
@@ -122,7 +122,7 @@ object TLHintHandler
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 //TODO ensure handler will pass through hints to clients that can handle them themselves
 

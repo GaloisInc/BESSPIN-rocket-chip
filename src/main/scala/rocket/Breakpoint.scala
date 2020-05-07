@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.tile.{CoreModule, CoreBundle}
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.tile.{CoreModule, CoreBundle}
+import ssithchips.rocketchip.util._
 
 class BPControl(implicit p: Parameters) extends CoreBundle()(p) {
   val ttype = UInt(width = 4)

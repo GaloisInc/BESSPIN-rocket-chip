@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.unittest
+package ssithchips.rocketchip.unittest
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
+import ssithchips.rocketchip.config.Parameters
 
 class TestHarness(implicit val p: Parameters) extends Module {
   val io = new Bundle { val success = Bool(OUTPUT) }

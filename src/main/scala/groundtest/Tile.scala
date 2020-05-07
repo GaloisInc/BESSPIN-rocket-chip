@@ -1,16 +1,16 @@
 // See LICENSE.SiFive for license details.
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.groundtest
+package ssithchips.rocketchip.groundtest
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.rocket.{DCache, RocketCoreParams}
-import freechips.rocketchip.tile._
-import freechips.rocketchip.tilelink._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.rocket.{DCache, RocketCoreParams}
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.tilelink._
 import scala.collection.mutable.ListBuffer
 
 trait GroundTestTileParams extends TileParams {

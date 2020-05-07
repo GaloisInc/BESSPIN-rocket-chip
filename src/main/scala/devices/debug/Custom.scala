@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
 import chisel3.core.{Input, Output}
 import chisel3.internal.sourceinfo.SourceInfo
-import freechips.rocketchip.diplomacy.{LazyModule, LazyModuleImp, NexusNode, RenderedEdge,
+import ssithchips.rocketchip.diplomacy.{LazyModule, LazyModuleImp, NexusNode, RenderedEdge,
   SimpleNodeImp, SinkNode, SourceNode, ValName}
-import freechips.rocketchip.config.Parameters
+import ssithchips.rocketchip.config.Parameters
 
 case class DebugCustomParams(
   addrs: List[Int],

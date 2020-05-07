@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip
+package ssithchips.rocketchip
 
 import Chisel._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.diplomacy._
 
 package object interrupts
 {

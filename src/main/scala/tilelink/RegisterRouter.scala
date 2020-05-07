@@ -1,15 +1,15 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import chisel3.experimental.RawModule
+import chisel3.RawModule
 import firrtl.annotations.ModuleName
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.util.{ElaborationArtefacts, GenRegDescsAnno, HeterogeneousBag}
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.util.{ElaborationArtefacts, GenRegDescsAnno, HeterogeneousBag}
 
 import scala.math.{max, min}
 

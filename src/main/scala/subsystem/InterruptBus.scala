@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.interrupts._
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.interrupts._
 
 /** Collects interrupts from internal and external devices and feeds them into the PLIC */ 
 class InterruptBusWrapper(implicit p: Parameters) {

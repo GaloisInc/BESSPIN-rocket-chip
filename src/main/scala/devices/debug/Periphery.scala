@@ -1,17 +1,17 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
 import chisel3.core.{IntParam, Input, Output}
 import chisel3.util.HasBlackBoxResource
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.subsystem._
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.jtag._
-import freechips.rocketchip.util._
-import freechips.rocketchip.tilelink._
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.subsystem._
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.jtag._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.tilelink._
 
 /** Options for possible debug interfaces */
 case object ExportDebugDMI extends Field[Boolean](true)

@@ -2,8 +2,8 @@
 package galois.subsystem
 
 import Chisel._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.subsystem._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.subsystem._
 
 /** Subsystem will power-on running at 0xC000_0000 (AXI Boot ROM) */
 trait HasGaloisGFEResetVectorImp extends LazyModuleImp

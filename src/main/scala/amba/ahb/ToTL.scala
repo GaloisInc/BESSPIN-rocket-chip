@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.ahb
+package ssithchips.rocketchip.amba.ahb
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util.MaskGen
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util.MaskGen
 
 case class AHBToTLNode()(implicit valName: ValName) extends MixedAdapterNode(AHBImp, TLImp)(
   dFn = { case AHBMasterPortParameters(masters) =>

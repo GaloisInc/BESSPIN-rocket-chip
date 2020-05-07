@@ -1,13 +1,13 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
 
-import freechips.rocketchip.config._
-import freechips.rocketchip.jtag._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.jtag._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
 
 case class JtagDTMConfig (
   idcodeVersion    : Int,      // chosen by manuf.

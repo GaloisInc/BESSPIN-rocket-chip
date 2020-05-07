@@ -3,15 +3,15 @@
 package galois.system
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
 import galois.subsystem._
 import galois.devices.tandemverification._
-import freechips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params, NExtTopInterrupts,
+import ssithchips.rocketchip.subsystem.{CanHaveMasterAXI4MemPort, CanHaveMasterAXI4MMIOPort, BankedL2Params, NExtTopInterrupts,
   BankedL2Key, HasRTCModuleImp, CanHaveMasterAXI4MMIOPortModuleImp, HasAsyncExtInterrupts, HasExtInterruptsModuleImp}
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.util.DontTouch
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.util.DontTouch
 import galois.devices.ExtPLICKey
 
 /** Top with periphery devices and ports, and a Rocket subsystem */

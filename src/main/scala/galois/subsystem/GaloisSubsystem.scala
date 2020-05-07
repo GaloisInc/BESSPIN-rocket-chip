@@ -5,17 +5,17 @@ package galois.subsystem
 import Chisel._
 import chisel3.util.experimental.BoringUtils
 import chisel3.internal.sourceinfo.SourceInfo
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.devices.debug.{HasPeripheryDebug, HasPeripheryDebugModuleImp}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.subsystem.{BaseSubsystem, BaseSubsystemModuleImp, RocketCrossingKey, RocketCrossingParams, RocketTilesKey}
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.devices.debug.{HasPeripheryDebug, HasPeripheryDebugModuleImp}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.subsystem.{BaseSubsystem, BaseSubsystemModuleImp, RocketCrossingKey, RocketCrossingParams, RocketTilesKey}
 import galois.devices.tandemverification._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.rocket.TracedInstruction
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.rocket.TracedInstruction
+import ssithchips.rocketchip.util._
 import galois.devices.HasPeripheryDebugWithTapModuleImp
 
 trait HasGaloisTiles extends HasTiles

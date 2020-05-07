@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.amba.axi4._
-import freechips.rocketchip.interrupts._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.amba.axi4._
+import ssithchips.rocketchip.interrupts._
 
 
 @deprecated("Only use this trait if you are confident you island will only ever be crossed to a single clock", "rocket-chip 1.3")

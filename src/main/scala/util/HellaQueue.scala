@@ -1,6 +1,6 @@
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
 

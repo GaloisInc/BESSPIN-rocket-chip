@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.interrupts
+package ssithchips.rocketchip.interrupts
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
 
 class IntXbar()(implicit p: Parameters) extends LazyModule
 {

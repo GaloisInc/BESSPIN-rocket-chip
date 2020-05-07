@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import chisel3._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
 
 case object MultiChipMaskKey extends Field[BigInt](0)
 

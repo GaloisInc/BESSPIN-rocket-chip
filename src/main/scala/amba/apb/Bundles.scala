@@ -1,9 +1,9 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.apb
+package ssithchips.rocketchip.amba.apb
 
 import Chisel._
-import freechips.rocketchip.util.GenericParameterizedBundle
+import ssithchips.rocketchip.util.GenericParameterizedBundle
 
 abstract class APBBundleBase(params: APBBundleParameters) extends GenericParameterizedBundle(params)
 

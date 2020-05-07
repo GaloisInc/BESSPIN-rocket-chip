@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.apb
+package ssithchips.rocketchip.amba.apb
 
 import Chisel._
 import chisel3.internal.sourceinfo.SourceInfo
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
 import scala.math.max
 
 case class APBSlaveParameters(

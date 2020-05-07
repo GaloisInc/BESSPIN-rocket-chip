@@ -1,12 +1,12 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.tilelink
+package ssithchips.rocketchip.devices.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.{Field, Parameters}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config.{Field, Parameters}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 class MasterMuxNode(uFn: Seq[TLClientPortParameters] => TLClientPortParameters)(implicit valName: ValName) extends TLCustomNode
 {
@@ -106,7 +106,7 @@ class MasterMux(uFn: Seq[TLClientPortParameters] => TLClientPortParameters)(impl
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class TLMasterMuxTester(txns: Int)(implicit p: Parameters) extends LazyModule {
   val fuzz1 = LazyModule(new TLFuzzer(txns))

@@ -1,19 +1,19 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
 import chisel3.util.Valid
-import chisel3.core.DontCare
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.util._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.util.property._
+import chisel3.DontCare
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.util.property._
 
 trait BusErrors extends Bundle {
   def toErrorList: List[Option[(Valid[UInt], String, String)]]

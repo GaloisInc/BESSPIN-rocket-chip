@@ -1,15 +1,16 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
 import chisel3.internal.InstanceId
-import chisel3.experimental.{annotate, ChiselAnnotation, RawModule}
+import chisel3.RawModule
+import chisel3.experimental.{annotate, ChiselAnnotation}
 import firrtl.annotations._
 
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.tilelink.TLToAXI4IdMapEntry
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.tilelink.TLToAXI4IdMapEntry
 
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{pretty, render}

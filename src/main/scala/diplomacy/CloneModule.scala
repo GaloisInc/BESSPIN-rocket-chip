@@ -6,10 +6,12 @@
 package chisel3.shim
 
 import Chisel._
-import chisel3.experimental.{RawModule, MultiIOModule, BaseModule}
+import chisel3.{MultiIOModule, RawModule}
 import chisel3.internal.Builder
 import chisel3.core.UserModule
+import chisel3.experimental.BaseModule
 import chisel3.internal.firrtl.{Command, DefInstance}
+
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.ArrayBuffer
 

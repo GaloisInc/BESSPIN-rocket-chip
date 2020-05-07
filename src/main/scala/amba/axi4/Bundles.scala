@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.amba.axi4
+package ssithchips.rocketchip.amba.axi4
 
 import Chisel._
 import chisel3.util.Irrevocable
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.util._
 
 abstract class AXI4BundleBase(params: AXI4BundleParameters) extends GenericParameterizedBundle(params)
 

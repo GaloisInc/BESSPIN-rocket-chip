@@ -8,7 +8,7 @@
 package galois.devices.tandemverification
 
 import Chisel._
-import freechips.rocketchip.rocket.PRV
+import ssithchips.rocketchip.rocket.PRV
 
 // Contains useful enum objects to make code more readable and reusable
 // Currently implements Trace Protocol Version 2018-11-20 / b1d1aa953e29331f7b367493fe4a00526f524079

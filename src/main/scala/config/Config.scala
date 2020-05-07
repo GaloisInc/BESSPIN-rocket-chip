@@ -1,6 +1,6 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.config
+package ssithchips.rocketchip.config
 
 abstract class Field[T] private (val default: Option[T])
 {

@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import chisel3._
 import chisel3.util._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
 
 // mask=0 -> passthrough
 class AddressAdjuster(mask: BigInt)(implicit p: Parameters) extends LazyModule {

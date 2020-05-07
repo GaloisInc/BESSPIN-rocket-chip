@@ -1,6 +1,6 @@
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
 import Chisel._
 
@@ -206,7 +206,7 @@ object Code {
 }
 
 /** Synthesizeable unit tests */
-import freechips.rocketchip.unittest._
+import ssithchips.rocketchip.unittest._
 
 class ECCTest(k: Int, timeout: Int = 500000) extends UnitTest(timeout) {
   val code = new SECDEDCode

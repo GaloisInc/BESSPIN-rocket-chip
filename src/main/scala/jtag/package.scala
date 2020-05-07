@@ -1,6 +1,6 @@
 // See LICENSE.jtag for license details
 
-package freechips.rocketchip
+package ssithchips.rocketchip
 
 import scala.language.implicitConversions
 

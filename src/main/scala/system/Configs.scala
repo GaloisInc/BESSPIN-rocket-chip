@@ -1,15 +1,15 @@
 // See LICENSE.SiFive for license details.
 // See LICENSE.Berkeley for license details.
 
-package freechips.rocketchip.system
+package ssithchips.rocketchip.system
 
 import Chisel._
-import freechips.rocketchip.config.Config
-import freechips.rocketchip.subsystem._
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Config
+import ssithchips.rocketchip.subsystem._
+import ssithchips.rocketchip.diplomacy._
 
-class WithJtagDTMSystem extends freechips.rocketchip.subsystem.WithJtagDTM
-class WithDebugSBASystem extends freechips.rocketchip.subsystem.WithDebugSBA
+class WithJtagDTMSystem extends ssithchips.rocketchip.subsystem.WithJtagDTM
+class WithDebugSBASystem extends ssithchips.rocketchip.subsystem.WithDebugSBA
 
 class BaseConfig extends Config(
   new WithDefaultMemPort() ++

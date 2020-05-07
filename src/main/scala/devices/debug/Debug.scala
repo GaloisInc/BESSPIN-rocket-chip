@@ -1,17 +1,17 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.debug
+package ssithchips.rocketchip.devices.debug
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.regmapper._
-import freechips.rocketchip.rocket.Instructions
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
-import freechips.rocketchip.devices.debug.systembusaccess._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.regmapper._
+import ssithchips.rocketchip.rocket.Instructions
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
+import ssithchips.rocketchip.devices.debug.systembusaccess._
 
 object DsbBusConsts {
   def sbAddrWidth = 12

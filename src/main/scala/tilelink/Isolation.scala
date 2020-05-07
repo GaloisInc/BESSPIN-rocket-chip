@@ -1,11 +1,11 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.tilelink
+package ssithchips.rocketchip.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.util.AsyncBundle
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.util.AsyncBundle
 
 // READ the comments in the TLIsolation object before you instantiate this module
 class TLIsolation(fOut: (Bool, UInt) => UInt, fIn: (Bool, UInt) => UInt)(implicit p: Parameters) extends LazyModule

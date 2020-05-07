@@ -1,9 +1,9 @@
 // See LICENSE.Berkeley for license details.
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.util
+package ssithchips.rocketchip.util
 
-import freechips.rocketchip.config._
+import ssithchips.rocketchip.config._
 import Chisel._
 
 // This key allows to pass a bundle monitor object through parameters

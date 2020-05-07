@@ -4,15 +4,15 @@
 package galois.subsystem
 
 import Chisel._
-import freechips.rocketchip.config._
-import freechips.rocketchip.devices.debug._
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.subsystem.{BankedL2Key, BroadcastKey, CacheBlockBytes, ControlBusKey, ExtBus, ExtIn, ExtMem, FrontBusKey, FrontBusParams, MasterPortParams, MemoryBusKey, MemoryBusParams, MemoryPortParams, NExtTopInterrupts, PeripheryBusKey, PeripheryBusParams, RocketCrossingKey, RocketCrossingParams, RocketTilesKey, SlavePortParams, SystemBusKey, SystemBusParams, TileMasterPortParams}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.rocket._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.devices.debug._
+import ssithchips.rocketchip.devices.tilelink._
+import ssithchips.rocketchip.subsystem.{BankedL2Key, BroadcastKey, CacheBlockBytes, ControlBusKey, ExtBus, ExtIn, ExtMem, FrontBusKey, FrontBusParams, MasterPortParams, MemoryBusKey, MemoryBusParams, MemoryPortParams, NExtTopInterrupts, PeripheryBusKey, PeripheryBusParams, RocketCrossingKey, RocketCrossingParams, RocketTilesKey, SlavePortParams, SystemBusKey, SystemBusParams, TileMasterPortParams}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.rocket._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 import galois.devices.xilinxAddrs
 import galois.devices.tandemverification._
 

@@ -1,18 +1,18 @@
 // See LICENSE.Berkeley for license details.
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.rocket
+package ssithchips.rocketchip.rocket
 
 import Chisel._
 import Chisel.ImplicitConversions._
 import chisel3.experimental._
-import freechips.rocketchip.config._
-import freechips.rocketchip.subsystem._
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.tile._
-import freechips.rocketchip.util._
-import freechips.rocketchip.util.property._
+import ssithchips.rocketchip.config._
+import ssithchips.rocketchip.subsystem._
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.tile._
+import ssithchips.rocketchip.util._
+import ssithchips.rocketchip.util.property._
 import chisel3.internal.sourceinfo.SourceInfo
 
 class FrontendReq(implicit p: Parameters) extends CoreBundle()(p) {

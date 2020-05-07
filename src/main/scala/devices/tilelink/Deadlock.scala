@@ -1,10 +1,10 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.devices.tilelink
+package ssithchips.rocketchip.devices.tilelink
 
 import Chisel._
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.diplomacy._
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.diplomacy._
 
 /** Adds a /dev/null slave that does not raise ready for any incoming traffic.
   * !!! WARNING: This device WILL cause your bus to deadlock for as long as you

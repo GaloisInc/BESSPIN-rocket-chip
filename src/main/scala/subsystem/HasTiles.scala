@@ -1,17 +1,17 @@
 // See LICENSE.SiFive for license details.
 
-package freechips.rocketchip.subsystem
+package ssithchips.rocketchip.subsystem
 
 import Chisel._
-import chisel3.experimental.dontTouch
-import freechips.rocketchip.config.Parameters
-import freechips.rocketchip.devices.debug.TLDebugModule
-import freechips.rocketchip.devices.tilelink.{BasicBusBlocker, BasicBusBlockerParams, CLINT, CLINTConsts, TLPLIC, PLICKey}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.interrupts._
-import freechips.rocketchip.tile.{BaseTile, LookupByHartId, LookupByHartIdImpl, TileKey, TileParams, SharedMemoryTLEdge, HasExternallyDrivenTileConstants}
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
+import chisel3.dontTouch
+import ssithchips.rocketchip.config.Parameters
+import ssithchips.rocketchip.devices.debug.TLDebugModule
+import ssithchips.rocketchip.devices.tilelink.{BasicBusBlocker, BasicBusBlockerParams, CLINT, CLINTConsts, TLPLIC, PLICKey}
+import ssithchips.rocketchip.diplomacy._
+import ssithchips.rocketchip.interrupts._
+import ssithchips.rocketchip.tile.{BaseTile, LookupByHartId, LookupByHartIdImpl, TileKey, TileParams, SharedMemoryTLEdge, HasExternallyDrivenTileConstants}
+import ssithchips.rocketchip.tilelink._
+import ssithchips.rocketchip.util._
 
 class ClockedTileInputs(implicit val p: Parameters) extends ParameterizedBundle
     with HasExternallyDrivenTileConstants

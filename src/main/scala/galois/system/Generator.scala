@@ -2,12 +2,12 @@
 
 package galois.system
 
-import freechips.rocketchip.subsystem.RocketTilesKey
-import freechips.rocketchip.tile.XLen
-import freechips.rocketchip.util.GeneratorApp
+import ssithchips.rocketchip.subsystem.RocketTilesKey
+import ssithchips.rocketchip.tile.XLen
+import ssithchips.rocketchip.util.GeneratorApp
 
 import scala.collection.mutable.LinkedHashSet
-import freechips.rocketchip.system.{DefaultTestSuites, TestGeneration, RegressionTestSuite}
+import ssithchips.rocketchip.system.{DefaultTestSuites, TestGeneration, RegressionTestSuite}
 
 /** A Generator for platforms containing Rocket Subsystemes */
 object Generator extends GeneratorApp {
