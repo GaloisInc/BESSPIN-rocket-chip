@@ -1,11 +1,12 @@
-Rocket Chip Generator :rocket: [![Build Status](https://travis-ci.org/chipsalliance/rocket-chip.svg?branch=master)](https://travis-ci.org/chipsalliance/rocket-chip)
+SSITH Rocket Chip Generator :rocket: 
 =====================
 
 This repository contains the Rocket chip generator necessary to instantiate
-the RISC-V Rocket Core. For more information on Rocket Chip, please consult our [technical report](http://www.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-17.html).
+the RISC-V Rocket Core. For more information on Rocket Chip, please consult this [technical report](http://www.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-17.html).
 
 ## Table of Contents
 
++ [SSITH Specific Information](#ssith)
 + [Quick instructions](#quick) for those who want to dive directly into the details without knowing exactly what's in the repository.
 + [What's in the Rocket chip generator repository?](#what)
 + [How should I use the Rocket chip generator?](#how)
@@ -15,6 +16,43 @@ the RISC-V Rocket Core. For more information on Rocket Chip, please consult our 
 + [How can I parameterize my Rocket chip?](#param)
 + [Debugging with GDB](#debug)
 + [Contributors](#contributors)
+
+## <a name="ssith"></a> SSITH Specific Information
+
+The Chisel P1 and P2 processors are based on rocket-chip 
+and will be compiled to verilog using this modified branch 
+of the rocket-chip generator.
+
+You can follow the general instructions below for checking out
+and setting up the generator. When producing either the verilog
+or verilator products, use the CONFIG and PROJECT variables to control
+which processor is generated:
+
+#### P1
+
+    $ cd vsim [or emulator]
+    $ make PROJECT=galois.system CONFIG=P1Config [verilog or output/testname]
+
+#### P2
+
+    $ cd vsim [or emulator]
+    $ make PROJECT=galois.system CONFIG=P2Config [verilog or output/testname]
+
+These are processor-only releases. For integration into the larger GFE system, checkout the 
+appropriate branch from the gfe repo.
+
+To build an FPGA-ready netlist directly, change the configuration name to "P#FPGACONFIG".
+
+Ex:
+
+    $ cd vsim; make PROJECT=galois.system CONFIG=P1FPGAConfig verilog
+
+Current caveats:
++ The boot ROM is external on the AXI bus. This does not affect simulation within the rocket-chip testing framework
++ Tandem verification (SVF) is not yet available
++ The FPGA configs include custom modifications to the JTAG state machine and DTM that may render them inoperable on non-Xilinx boards
+  + In this configuration, TCK/TDI/TDO should come from Xilinx BSCANE2 primitives (not instantiated here). Look at the xilinxjtag module in the gfe repo.
++ Currently 1 external interrupt without a PLIC. This will increase to 16 managed by the rocket PLIC with a later GFE release
 
 ## <a name="quick"></a> Quick Instructions
 

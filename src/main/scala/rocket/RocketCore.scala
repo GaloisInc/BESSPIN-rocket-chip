@@ -742,6 +742,7 @@ class Rocket(tile: RocketTile)(implicit p: Parameters) extends CoreModule()(p)
   }
   val rocc_blocked = Reg(Bool())
   rocc_blocked := !wb_xcpt && !io.rocc.cmd.ready && (io.rocc.cmd.valid || rocc_blocked)
+  val tv_block = Wire(Bool(false))
 
   val ctrl_stalld =
     id_ex_hazard || id_mem_hazard || id_wb_hazard || id_sboard_hazard ||
@@ -754,7 +755,7 @@ class Rocket(tile: RocketTile)(implicit p: Parameters) extends CoreModule()(p)
     !clock_en ||
     id_do_fence ||
     csr.io.csr_stall ||
-    id_reg_pause
+    id_reg_pause || tv_block
   ctrl_killd := !ibuf.io.inst(0).valid || ibuf.io.inst(0).bits.replay || take_pc_mem_wb || ctrl_stalld || csr.io.interrupt
 
   io.imem.req.valid := take_pc

@@ -2,6 +2,8 @@
 
 package freechips.rocketchip.jtag
 
+import freechips.rocketchip.devices.debug.JtagDTMKey
+
 import scala.collection.SortedMap
 
 // !!! See Issue #1160.
@@ -73,9 +75,14 @@ class JtagTapController(irLength: Int, initialInstruction: BigInt)(implicit val 
 
   val tdo = Wire(Bool())  // 4.4.1c TDI should appear here uninverted after shifting
   val tdo_driven = Wire(Bool())
-  io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg"))  // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
-  io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
-
+  if (p(JtagDTMKey).tdoOnNegEdge) {
+    io.jtag.TDO.data := NegEdgeReg(clock, tdo, name = Some("tdoReg")) // 4.5.1a TDO changes on falling edge of TCK, 6.1.2.1d driver active on first TCK falling edge in ShiftIR and ShiftDR states
+    io.jtag.TDO.driven := NegEdgeReg(clock, tdo_driven, name = Some("tdoeReg"))
+  } else {
+    // Optionally drive TDO on positive edge - helps with Xilinx JTAG
+    io.jtag.TDO.data := tdo
+    io.jtag.TDO.driven := tdo_driven
+  }
   //
   // JTAG state machine
   //

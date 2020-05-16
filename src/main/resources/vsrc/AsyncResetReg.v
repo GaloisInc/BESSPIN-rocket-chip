@@ -54,10 +54,10 @@ input  wire rst;
    // that, yet Chisel codebase is absolutely intolerant
    // of Xs.
 `ifndef SYNTHESIS
+  integer    initvar;
+  reg [31:0] _RAND;
   initial begin:B0
     `ifdef RANDOMIZE
-    integer    initvar;
-    reg [31:0] _RAND;
     _RAND = {1{$random}};
     q = _RAND[0];
     `endif // RANDOMIZE

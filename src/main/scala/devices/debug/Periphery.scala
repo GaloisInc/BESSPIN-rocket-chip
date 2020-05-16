@@ -127,8 +127,10 @@ trait HasPeripheryDebugModuleImp extends LazyModuleImp {
 
   val dtm = debug.map(_.systemjtag.map { instantiateJtagDTM(_) })
 
+
   def instantiateJtagDTM(sj: SystemJTAGIO): DebugTransportModuleJTAG = {
 
+    val tap = Module(new DMITap)
     val dtm = Module(new DebugTransportModuleJTAG(p(DebugModuleKey).get.nDMIAddrSize, p(JtagDTMKey)))
     dtm.io.jtag <> sj.jtag
 
@@ -142,10 +144,15 @@ trait HasPeripheryDebugModuleImp extends LazyModuleImp {
     dtm.io.jtag_version := sj.version
     dtm.reset          := dtm.io.fsmReset
 
+    tap.io.dmi_in.dmi <> dtm.io.dmi
+    tap.io.dmi_in.dmiClock := sj.jtag.TCK
+    tap.io.clock := clock
+    tap.io.reset := reset
+    tap.io.dmi_in.dmiClock := sj.jtag.TCK
+    tap.io.dmi_in.dmiReset := ResetCatchAndSync(sj.jtag.TCK, sj.reset, "dmiResetCatch", psdio)
+
     outer.debugOpt.map { outerdebug => 
-      outerdebug.module.io.dmi.get.dmi <> dtm.io.dmi
-      outerdebug.module.io.dmi.get.dmiClock := sj.jtag.TCK
-      outerdebug.module.io.dmi.get.dmiReset := ResetCatchAndSync(sj.jtag.TCK, sj.reset, "dmiResetCatch", psdio)
+      outerdebug.module.io.dmi.get <> tap.io.dmi_out
     }
     dtm
   }

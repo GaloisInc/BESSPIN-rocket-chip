@@ -418,6 +418,18 @@ class CSRFile(
   io.bp := reg_bp take nBreakpoints
   io.pmp := reg_pmp.map(PMP(_))
 
+  // Adding code that may be necessary for later TandemVerification addition
+  val mip_update = Wire(Bool())
+  val mip_value = Wire(UInt(width = xLen))
+
+  mip_value := mip.asUInt()
+
+  when (mip.asUInt() =/= reg_mip.asUInt()) {
+    mip_update := true
+  }.otherwise {
+    mip_update := false
+  }
+
   val isaMaskString =
     (if (usingMulDiv) "M" else "") +
     (if (usingAtomics) "A" else "") +
@@ -654,7 +666,13 @@ class CSRFile(
   val noCause :: mCause :: hCause :: sCause :: uCause :: Nil = Enum(5)
   val xcause_dest = Wire(init = noCause)
 
+  // Adding code that may be necessary for later TandemVerification addition
+  val trap_mstatus = Wire(init=new MStatus().fromBits(0))
+  val trap_mstatus_uint = Wire(UInt(width = xLen))
+
   when (exception) {
+    trap_mstatus := reg_mstatus
+    trap_mstatus_uint := trap_mstatus.asUInt
     when (trapToDebug) {
       when (!reg_debug) {
         reg_debug := true
@@ -671,6 +689,9 @@ class CSRFile(
       reg_mstatus.spie := reg_mstatus.sie
       reg_mstatus.spp := reg_mstatus.prv
       reg_mstatus.sie := false
+      trap_mstatus.spie := reg_mstatus.sie
+      trap_mstatus.spp := reg_mstatus.prv
+      trap_mstatus.sie := false
       new_prv := PRV.S
     }.otherwise {
       reg_mepc := epc
@@ -680,6 +701,9 @@ class CSRFile(
       reg_mstatus.mpie := reg_mstatus.mie
       reg_mstatus.mpp := trimPrivilege(reg_mstatus.prv)
       reg_mstatus.mie := false
+      trap_mstatus.mpie := reg_mstatus.mie
+      trap_mstatus.mpp := trimPrivilege(reg_mstatus.prv)
+      trap_mstatus.mie := false
       new_prv := PRV.M
     }
   }
@@ -759,8 +783,15 @@ class CSRFile(
   }
 
   val csr_wen = io.rw.cmd.isOneOf(CSR.S, CSR.C, CSR.W)
+  // Adding code that may be necessary for later TandemVerification addition
+  val csr_trace_waddr = Reg(UInt(width = CSR.ADDRSZ))
+  val csr_trace_wdata = Wire(UInt(width = xLen))
+  val decoded_trace_addr = read_mapping map { case (k, v) => k -> (csr_trace_waddr === k) }
+  csr_trace_wdata := Mux1H(for ((k, v) <- read_mapping) yield decoded_trace_addr(k) -> v)
+
   io.csrw_counter := Mux(coreParams.haveBasicCounters && csr_wen && (io.rw.addr.inRange(CSRs.mcycle, CSRs.mcycle + CSR.nCtr) || io.rw.addr.inRange(CSRs.mcycleh, CSRs.mcycleh + CSR.nCtr)), UIntToOH(io.rw.addr(log2Ceil(CSR.nCtr+nPerfCounters)-1, 0)), 0.U)
   when (csr_wen) {
+    csr_trace_waddr := io.rw.addr
     when (decoded_addr(CSRs.mstatus)) {
       val new_mstatus = new MStatus().fromBits(wdata)
       reg_mstatus.mie := new_mstatus.mie
