@@ -21,6 +21,7 @@ case class JtagDTMConfig (
   debugIdleCycles  : Int,
   irLength         : Int,
   tdoOnNegEdge     : Boolean,
+  includeExtraIO   : Boolean,
   registerAddrs    : dtmJTAGAddrs)
 
 case object JtagDTMKey extends Field[JtagDTMConfig](new JtagDTMKeyDefault())
@@ -32,6 +33,7 @@ class JtagDTMKeyDefault extends JtagDTMConfig(
   debugIdleCycles = 5, // Reasonable guess for synchronization.
   irLength = 5,
   tdoOnNegEdge = true,
+  includeExtraIO = true,
   registerAddrs = new defaultAddrs()
 )
 
@@ -71,12 +73,12 @@ class DTMInfo extends Bundle {
 }
 
 /** A wrapper around JTAG providing a reset signal and manufacturer id. */
-class SystemJTAGIO extends Bundle {
+class SystemJTAGIO(implicit p: Parameters) extends Bundle {
   val jtag = new JTAGIO(hasTRSTn = false).flip
   val reset = Bool(INPUT)
   val mfr_id = UInt(INPUT, 11)
-  val part_number = UInt(INPUT, 16)
-  val version = UInt(INPUT, 4)
+  val part_number = UInt(INPUT, if (p(JtagDTMKey).includeExtraIO) 16 else 0)
+  val version = UInt(INPUT, if (p(JtagDTMKey).includeExtraIO) 4 else 0)
 }
 
 class DebugTransportModuleJTAG(debugAddrBits: Int, c: JtagDTMConfig)

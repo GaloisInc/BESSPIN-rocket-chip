@@ -140,8 +140,10 @@ trait HasPeripheryDebugModuleImp extends LazyModuleImp {
     dtm.clock          := sj.jtag.TCK
     dtm.io.jtag_reset  := sj.reset
     dtm.io.jtag_mfr_id := sj.mfr_id
-    dtm.io.jtag_part_number := sj.part_number
-    dtm.io.jtag_version := sj.version
+    if (p(JtagDTMKey).includeExtraIO) {
+      dtm.io.jtag_part_number := sj.part_number
+      dtm.io.jtag_version := sj.version
+    }
     dtm.reset          := dtm.io.fsmReset
 
     tap.io.dmi_in.dmi <> dtm.io.dmi
