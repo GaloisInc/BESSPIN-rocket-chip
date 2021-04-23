@@ -1,6 +1,8 @@
 SSITH Rocket Chip Generator :rocket: 
 =====================
 
+This repository is a fork of the [Rocket Chip repo](https://github.com/chipsalliance/rocket-chip) ported for the BESSPIN project.
+
 This repository contains the Rocket chip generator necessary to instantiate
 the RISC-V Rocket Core. For more information on Rocket Chip, please consult this [technical report](http://www.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-17.html).
 
